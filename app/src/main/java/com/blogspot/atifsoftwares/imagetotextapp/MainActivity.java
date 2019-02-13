@@ -33,7 +33,7 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     EditText mResultEt;
     ImageView mPreviewIv;
@@ -54,15 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setSubtitle("Click Image button to insert Image");
-        mResultEt = findViewById(R.id.resultEt);
+        mResultEt = findViewById(R.id.editText7);
         mPreviewIv = findViewById(R.id.imageIv);
 
-
-        btnActTwo = (Button) findViewById(R.id.btnActTwo);
-        btnActTwo.setOnClickListener(this);
 
         //camera permission
         cameraPermission = new String[]{Manifest.permission.CAMERA,
@@ -71,21 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnActTwo:
-                Intent intent = new Intent(this, Main2Activity.class);
-
-                intent.putExtra("txt",mResultEt.getText().toString());
-
-                startActivity(intent);
-                // TODO Call second activity
-                break;
-            default:
-                break;
-        }
-    }
 
     //actionbar menu
     @Override

@@ -16,7 +16,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         btnSave = (Button) findViewById(R.id.btn2);
         imgV = (ImageView) findViewById(R.id.imageIv);
-        txt = (TextView) findViewById(R.id.textView1);
+        txt = (TextView) findViewById(R.id.editText7);
 
         String txtMain = getIntent().getStringExtra("txt");
 //        txt.setText(txt.getText().toString()+ " " +txtMain); //вот из-за этойй  залупы не робит если шо 2 активити Error over999

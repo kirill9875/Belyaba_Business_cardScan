@@ -33,10 +33,11 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.io.IOException;
 
-    EditText mResultEt;
-    ImageView mPreviewIv;
+public class MainActivity extends AppCompatActivity {
+
+
 
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -53,16 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setSubtitle("Click Image button to insert Image");
 
-        mResultEt = findViewById(R.id.resultEt);
-        mPreviewIv = findViewById(R.id.imageIv);
 
-
-        btnActTwo = (Button) findViewById(R.id.btnActTwo);
-        btnActTwo.setOnClickListener(this);
 
         //camera permission
         cameraPermission = new String[]{Manifest.permission.CAMERA,
@@ -71,21 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnActTwo:
-                Intent intent = new Intent(this, Main2Activity.class);
-
-                intent.putExtra("txt",mResultEt.getText().toString());
-
-                startActivity(intent);
-                // TODO Call second activity
-                break;
-            default:
-                break;
-        }
-    }
 
     //actionbar menu
     @Override
@@ -244,13 +226,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK){
+                Intent intent = new Intent(this, Main2Activity.class);
+
+
+
+
                 Uri resultUri = result.getUri(); //get image uri
-                //set image to image view
-                mPreviewIv.setImageURI(resultUri);
+                intent.putExtra("imageUri", resultUri.toString());
 
                 //get drawable bitmap for text recognition
-                BitmapDrawable bitmapDrawable = (BitmapDrawable)mPreviewIv.getDrawable();
-                Bitmap bitmap = bitmapDrawable.getBitmap();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
@@ -265,11 +255,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     for (int i =0; i<items.size(); i++){
                         TextBlock myItem = items.valueAt(i);
                         sb.append(myItem.getValue());
-                        sb.append("\n");
+                        sb.append("`");
                     }
                     //set text to edit text
-                    mResultEt.setText(sb.toString());
+                    intent.putExtra("fname",sb.toString());
                 }
+                startActivity(intent);
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
                 //if there is any error show it

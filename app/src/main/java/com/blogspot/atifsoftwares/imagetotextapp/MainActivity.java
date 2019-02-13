@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setSubtitle("Click Image button to insert Image");
         mResultEt = findViewById(R.id.editText7);
@@ -226,13 +226,16 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK){
+                Intent intent = new Intent(this, Main2Activity.class);
+                startActivity(intent);
+
                 Uri resultUri = result.getUri(); //get image uri
                 //set image to image view
-                mPreviewIv.setImageURI(resultUri);
+                //mPreviewIv.setImageURI(resultUri);
 
                 //get drawable bitmap for text recognition
-                BitmapDrawable bitmapDrawable = (BitmapDrawable)mPreviewIv.getDrawable();
-                Bitmap bitmap = bitmapDrawable.getBitmap();
+//                BitmapDrawable bitmapDrawable = (BitmapDrawable)mPreviewIv.getDrawable();
+//                Bitmap bitmap = bitmapDrawable.getBitmap();
 
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
@@ -240,17 +243,17 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-                    SparseArray<TextBlock> items = recognizer.detect(frame);
+//                    Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+//                    SparseArray<TextBlock> items = recognizer.detect(frame);
                     StringBuilder sb = new StringBuilder();
                     //get text from sb until there is no text
-                    for (int i =0; i<items.size(); i++){
-                        TextBlock myItem = items.valueAt(i);
-                        sb.append(myItem.getValue());
-                        sb.append("\n");
-                    }
+//                    for (int i =0; i<items.size(); i++){
+//                        TextBlock myItem = items.valueAt(i);
+//                        sb.append(myItem.getValue());
+//                        sb.append("\n");
+//                    }
                     //set text to edit text
-                    mResultEt.setText(sb.toString());
+//                    mResultEt.setText(sb.toString());
                 }
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){

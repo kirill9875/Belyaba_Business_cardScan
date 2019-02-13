@@ -32,19 +32,10 @@
         app:layout_constraintTop_toBottomOf="@+id/imageIv">
 
         <LinearLayout
+            android:id="@+id/liner_for_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/editText7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Name" />
-
-        </LinearLayout>
+            android:orientation="vertical"/>
     </ScrollView>
 
     <Button

@@ -33,10 +33,11 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
-    EditText mResultEt;
-    ImageView mPreviewIv;
+
 
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -57,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setSubtitle("Click Image button to insert Image");
-        mResultEt = findViewById(R.id.editText7);
-        mPreviewIv = findViewById(R.id.imageIv);
+
 
 
         //camera permission
@@ -227,15 +227,20 @@ public class MainActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK){
                 Intent intent = new Intent(this, Main2Activity.class);
-                startActivity(intent);
+
+
+
 
                 Uri resultUri = result.getUri(); //get image uri
-                //set image to image view
-                //mPreviewIv.setImageURI(resultUri);
+                intent.putExtra("imageUri", resultUri.toString());
 
                 //get drawable bitmap for text recognition
-//                BitmapDrawable bitmapDrawable = (BitmapDrawable)mPreviewIv.getDrawable();
-//                Bitmap bitmap = bitmapDrawable.getBitmap();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
@@ -243,18 +248,19 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                 }
                 else {
-//                    Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-//                    SparseArray<TextBlock> items = recognizer.detect(frame);
+                    Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+                    SparseArray<TextBlock> items = recognizer.detect(frame);
                     StringBuilder sb = new StringBuilder();
                     //get text from sb until there is no text
-//                    for (int i =0; i<items.size(); i++){
-//                        TextBlock myItem = items.valueAt(i);
-//                        sb.append(myItem.getValue());
-//                        sb.append("\n");
-//                    }
+                    for (int i =0; i<items.size(); i++){
+                        TextBlock myItem = items.valueAt(i);
+                        sb.append(myItem.getValue());
+                        sb.append("`");
+                    }
                     //set text to edit text
-//                    mResultEt.setText(sb.toString());
+                    intent.putExtra("fname",sb.toString());
                 }
+                startActivity(intent);
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
                 //if there is any error show it

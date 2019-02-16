@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
                     for (int i =0; i<items.size(); i++){
                         TextBlock myItem = items.valueAt(i);
                         sb.append(myItem.getValue());
-                        sb.append("`");
+                        sb.append("\n");
                     }
                     //set text to edit text
                     intent.putExtra("fname",sb.toString());

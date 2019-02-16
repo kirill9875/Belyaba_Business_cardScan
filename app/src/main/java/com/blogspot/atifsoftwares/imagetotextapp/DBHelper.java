@@ -10,6 +10,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "DBcards";
+    public static final String TABLE_NAME = "DBcards";
 
     public static final String NAME = "name";
     public static final String COMPANY = "company";
@@ -24,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + DB_NAME + " (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
                 "\t" + NAME + " text, \n" +
                 "\t" + COMPANY + " text, \n" +
                 "\t" + EMAIL + " text, \n" +

@@ -85,6 +85,8 @@ public class Main2Activity extends AppCompatActivity {
         View.OnClickListener oclBtnOk = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent result = new Intent();
+
                 View childView = null;
                 for(int i = 0; i < ll.getChildCount(); i++){
                     childView = ll.getChildAt(i);
@@ -116,9 +118,16 @@ public class Main2Activity extends AppCompatActivity {
                                 _URL += text + "\n";
                                 break;
                         }
-                        System.out.print(1);
                     }
                 }
+                result.putExtra("Name", _Name);
+                result.putExtra("Company", _Company);
+                result.putExtra("Email", _Email);
+                result.putExtra("Telephon", _Telephone);
+                result.putExtra("URL", _URL);
+
+                setResult(RESULT_OK, result);
+                finish();
             }
         };
 

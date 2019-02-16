@@ -38,7 +38,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    static final private int CHOOSE_THIEF = 21;
 
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -214,7 +214,24 @@ public class MainActivity extends AppCompatActivity {
     //handle image result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK){
+        if (requestCode == CHOOSE_THIEF) {
+            if (resultCode == RESULT_OK) {
+                String Name = data.getStringExtra("Name");
+                String Company = data.getStringExtra("Company");
+                String Email = data.getStringExtra("Email");
+                String Telephon = data.getStringExtra("Telephon");
+                String URL = data.getStringExtra("URL");
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DBHelper.NAME,Name);
+                contentValues.put(DBHelper.COMPANY,Company);
+                contentValues.put(DBHelper.EMAIL,Email);
+                contentValues.put(DBHelper.TELEPHONE,Telephon);
+                contentValues.put(DBHelper.URL,URL);
+                
+                DB.insert(DBHelper.TABLE_NAME, null, contentValues);
+            }
+        } else if (resultCode == RESULT_OK){
             if (requestCode == IMAGE_PICK_GALLERY_CODE){
                 //got image from gallery now crop it
                 CropImage.activity(data.getData())
@@ -267,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                     //set text to edit text
                     intent.putExtra("fname",sb.toString());
                 }
-                startActivity(intent);
+                startActivityForResult(intent, CHOOSE_THIEF);
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
                 //if there is any error show it

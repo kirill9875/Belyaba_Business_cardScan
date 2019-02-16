@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     DBHelper dbHelper;
     SQLiteDatabase DB;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,8 +230,10 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put(DBHelper.EMAIL,Email);
                 contentValues.put(DBHelper.TELEPHONE,Telephon);
                 contentValues.put(DBHelper.URL,URL);
-                
-                DB.insert(DBHelper.TABLE_NAME, null, contentValues);
+
+
+                long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
+                System.out.print("Занесено в табл " + id);
             }
         } else if (resultCode == RESULT_OK){
             if (requestCode == IMAGE_PICK_GALLERY_CODE){
@@ -291,6 +295,31 @@ public class MainActivity extends AppCompatActivity {
                 Exception error = result.getError();
                 Toast.makeText(this, ""+error, Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            int id_id = cursor.getColumnIndex("_id");
+            int id_name = cursor.getColumnIndex("name");
+            int id_company = cursor.getColumnIndex("company");
+            int id_email = cursor.getColumnIndex("email");
+            int id_telephone = cursor.getColumnIndex("telephone");
+            int id_url = cursor.getColumnIndex("URL");
+            do {
+                int id = cursor.getInt(id_id);
+                String name = cursor.getString(id_name);
+                String company = cursor.getString(id_company);
+                String email = cursor.getString(id_email);
+                String telephone = cursor.getString(id_telephone);
+                String url = cursor.getString(id_url);
+
+            } while (cursor.moveToNext());
+        } else {
+            cursor.close();
         }
     }
 }

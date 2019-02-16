@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +28,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
@@ -37,7 +42,8 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    static final private int CHOOSE_THIEF = 21;
+    static final private int ID_FOR_CARD = 9000;
 
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -50,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     Uri image_uri;
     Button btnActTwo;
+
+    DBHelper dbHelper;
+    SQLiteDatabase DB;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +76,62 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE};
         //storage permission
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        dbHelper = new DBHelper(this);
+
+        LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
+
+        DB = dbHelper.getWritableDatabase();
+
+
+        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            int id_id = cursor.getColumnIndex("_id");
+            int id_name = cursor.getColumnIndex("name");
+            int id_company = cursor.getColumnIndex("company");
+            int id_telephone = cursor.getColumnIndex("telephone");
+            do {
+                int id = cursor.getInt(id_id) + ID_FOR_CARD;
+                String name = cursor.getString(id_name);
+                String company = cursor.getString(id_company);
+                String telephone = cursor.getString(id_telephone);
+
+                LinearLayout horisont_liner = new LinearLayout(this);
+                horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
+                horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                LinearLayout vertical_liner = new LinearLayout(this);
+                vertical_liner.setOrientation(LinearLayout.VERTICAL);
+                vertical_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                TextView TextViewName = new TextView(this);
+                TextViewName.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                TextViewName.setId(id);
+                TextViewName.setText(name);
+
+                TextView TextViewCompany = new TextView(this);
+                TextViewCompany.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                TextViewCompany.setId(id);
+                TextViewCompany.setText(name);
+
+                TextView TextViewTelephone = new TextView(this);
+                TextViewTelephone.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                TextViewTelephone.setId(id);
+                TextViewTelephone.setText(name);
+
+                vertical_liner.addView(TextViewName);
+                vertical_liner.addView(TextViewCompany);
+                vertical_liner.addView(TextViewTelephone);
+
+                horisont_liner.addView(vertical_liner);
+
+                main.addView(horisont_liner);
+
+            } while (cursor.moveToNext());
+        } else {
+            cursor.close();
+        }
+
     }
 
 
@@ -207,7 +273,26 @@ public class MainActivity extends AppCompatActivity {
     //handle image result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK){
+        if (requestCode == CHOOSE_THIEF) {
+            if (resultCode == RESULT_OK) {
+                String Name = data.getStringExtra("Name");
+                String Company = data.getStringExtra("Company");
+                String Email = data.getStringExtra("Email");
+                String Telephon = data.getStringExtra("Telephon");
+                String URL = data.getStringExtra("URL");
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DBHelper.NAME,Name);
+                contentValues.put(DBHelper.COMPANY,Company);
+                contentValues.put(DBHelper.EMAIL,Email);
+                contentValues.put(DBHelper.TELEPHONE,Telephon);
+                contentValues.put(DBHelper.URL,URL);
+
+
+                long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
+                System.out.print("Занесено в табл " + id);
+            }
+        } else if (resultCode == RESULT_OK){
             if (requestCode == IMAGE_PICK_GALLERY_CODE){
                 //got image from gallery now crop it
                 CropImage.activity(data.getData())
@@ -255,18 +340,43 @@ public class MainActivity extends AppCompatActivity {
                     for (int i =0; i<items.size(); i++){
                         TextBlock myItem = items.valueAt(i);
                         sb.append(myItem.getValue());
-                        sb.append("`");
+                        sb.append("\n");
                     }
                     //set text to edit text
                     intent.putExtra("fname",sb.toString());
                 }
-                startActivity(intent);
+                startActivityForResult(intent, CHOOSE_THIEF);
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
                 //if there is any error show it
                 Exception error = result.getError();
                 Toast.makeText(this, ""+error, Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            int id_id = cursor.getColumnIndex("_id");
+            int id_name = cursor.getColumnIndex("name");
+            int id_company = cursor.getColumnIndex("company");
+            int id_email = cursor.getColumnIndex("email");
+            int id_telephone = cursor.getColumnIndex("telephone");
+            int id_url = cursor.getColumnIndex("URL");
+            do {
+                int id = cursor.getInt(id_id);
+                String name = cursor.getString(id_name);
+                String company = cursor.getString(id_company);
+                String email = cursor.getString(id_email);
+                String telephone = cursor.getString(id_telephone);
+                String url = cursor.getString(id_url);
+
+            } while (cursor.moveToNext());
+        } else {
+            cursor.close();
         }
     }
 }

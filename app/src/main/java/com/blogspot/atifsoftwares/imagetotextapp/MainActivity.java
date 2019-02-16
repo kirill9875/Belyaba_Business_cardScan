@@ -20,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
@@ -40,6 +43,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     static final private int CHOOSE_THIEF = 21;
+    static final private int ID_FOR_CARD = 9000;
 
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -74,7 +78,60 @@ public class MainActivity extends AppCompatActivity {
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         dbHelper = new DBHelper(this);
+
+        LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
+
         DB = dbHelper.getWritableDatabase();
+
+
+        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            int id_id = cursor.getColumnIndex("_id");
+            int id_name = cursor.getColumnIndex("name");
+            int id_company = cursor.getColumnIndex("company");
+            int id_telephone = cursor.getColumnIndex("telephone");
+            do {
+                int id = cursor.getInt(id_id) + ID_FOR_CARD;
+                String name = cursor.getString(id_name);
+                String company = cursor.getString(id_company);
+                String telephone = cursor.getString(id_telephone);
+
+                LinearLayout horisont_liner = new LinearLayout(this);
+                horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
+                horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                LinearLayout vertical_liner = new LinearLayout(this);
+                vertical_liner.setOrientation(LinearLayout.VERTICAL);
+                vertical_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                TextView TextViewName = new TextView(this);
+                TextViewName.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                TextViewName.setId(id);
+                TextViewName.setText(name);
+
+                TextView TextViewCompany = new TextView(this);
+                TextViewCompany.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                TextViewCompany.setId(id);
+                TextViewCompany.setText(name);
+
+                TextView TextViewTelephone = new TextView(this);
+                TextViewTelephone.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                TextViewTelephone.setId(id);
+                TextViewTelephone.setText(name);
+
+                vertical_liner.addView(TextViewName);
+                vertical_liner.addView(TextViewCompany);
+                vertical_liner.addView(TextViewTelephone);
+
+                horisont_liner.addView(vertical_liner);
+
+                main.addView(horisont_liner);
+
+            } while (cursor.moveToNext());
+        } else {
+            cursor.close();
+        }
+
     }
 
 

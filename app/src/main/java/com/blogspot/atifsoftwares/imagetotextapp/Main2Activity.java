@@ -16,7 +16,7 @@ import android.net.Uri;
 
 public class Main2Activity extends AppCompatActivity {
 
-    Button btnSave;
+
     public ImageView imgV;
     public TextView txt;
     int idtext = 4000;
@@ -24,7 +24,7 @@ public class Main2Activity extends AppCompatActivity {
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        btnSave = (Button) findViewById(R.id.btn2);
+
 
         String txtMain = getIntent().getStringExtra("txt");
 //        txt.setText(txt.getText().toString()+ " " +txtMain); //вот из-за этойй  залупы не робит если шо 2 активити Error over999

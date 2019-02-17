@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.net.Uri;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -55,10 +58,11 @@ public class Main2Activity extends AppCompatActivity {
     int idtext = 4000;
     int idspinn = 3000;
 
+    public LinearLayout ll;
+
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        String txtMain = getIntent().getStringExtra("txt");
 
 
         super.onCreate(savedInstanceState);
@@ -69,7 +73,7 @@ public class Main2Activity extends AppCompatActivity {
 
         ImageView mPreviewIv;
         mPreviewIv = findViewById(R.id.imageIv);
-        final LinearLayout ll = (LinearLayout)findViewById(R.id.liner_for_edittext);
+        ll = (LinearLayout)findViewById(R.id.liner_for_edittext);
         for (String retval : fName.split("\n")) {
             LinearLayout horisont_liner = new LinearLayout(this);
             horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
@@ -102,142 +106,115 @@ public class Main2Activity extends AppCompatActivity {
         }
         mPreviewIv.setImageURI(myUri);
 
-        Button btnsave = (Button) findViewById(R.id.button_save);
+    }
 
-        View.OnClickListener oclBtnOk = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent result = new Intent();
 
-                View childView = null;
-                for(int i = 0; i < ll.getChildCount(); i++){
-                    childView = ll.getChildAt(i);
-                    if (childView instanceof LinearLayout){
+    public void save_ac_btn() {
 
-                        View childView_splinn = null;
-                        View childView_edittext = null;
+        Intent result = new Intent();
 
-                        childView_splinn = ((LinearLayout) childView).getChildAt(0);
-                        childView_edittext = ((LinearLayout) childView).getChildAt(1);
+        View childView = null;
+        for(int i = 0; i < ll.getChildCount(); i++){
+            childView = ll.getChildAt(i);
+            if (childView instanceof LinearLayout){
 
-                        String text = ((EditText)childView_edittext).getText().toString();
-                        String position = ((Spinner)childView_splinn).getSelectedItem().toString();
+                View childView_splinn = null;
+                View childView_edittext = null;
 
-                        switch(position) {
-                            case NAME:
-                                _Name += text + "\n";
-                                break;
-                            case SUBJECT:
-                                _Subject += text + "\n";
-                                break;
-                            case COMPANY:
-                                _Company += text + "\n";
-                                break;
-                            case EMAIL:
-                                _Email += text + "\n";
-                                break;
-                            case TELEPHONE:
-                                _Telephone += text + "\n";
-                                break;
-                            case URL:
-                                _URL += text + "\n";
-                                break;
-                             default:
-                                 break;
-                        }
-                    }
+                childView_splinn = ((LinearLayout) childView).getChildAt(0);
+                childView_edittext = ((LinearLayout) childView).getChildAt(1);
+
+                String text = ((EditText)childView_edittext).getText().toString();
+                String position = ((Spinner)childView_splinn).getSelectedItem().toString();
+
+                switch(position) {
+                    case NAME:
+                        _Name += text + "\n";
+                        break;
+                    case SUBJECT:
+                        _Subject += text + "\n";
+                        break;
+                    case COMPANY:
+                        _Company += text + "\n";
+                        break;
+                    case EMAIL:
+                        _Email += text + "\n";
+                        break;
+                    case TELEPHONE:
+                        _Telephone += text + "\n";
+                        break;
+                    case URL:
+                        _URL += text + "\n";
+                        break;
+                    default:
+                        break;
                 }
-                result.putExtra("Name", _Name);
-                result.putExtra("Subject", _Subject);
-                result.putExtra("Company", _Company);
-                result.putExtra("Email", _Email);
-                result.putExtra("Telephone", _Telephone);
-                result.putExtra("URL", _URL);
+            }
+        }
+        result.putExtra("Name", _Name);
+        result.putExtra("Subject", _Subject);
+        result.putExtra("Company", _Company);
+        result.putExtra("Email", _Email);
+        result.putExtra("Telephone", _Telephone);
+        result.putExtra("URL", _URL);
 
-                //work with json
+        //work with json
 
-                Thread t = new Thread(){
+        Thread t = new Thread(){
 
 //                    HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead
 
-                    HttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = new DefaultHttpClient();
 
 
 
-                    public void run() {
-                        Looper.prepare(); //For Preparing Message Pool for the child Thread
-                        HttpPost request = new HttpPost("https://webhook.site/3e55d028-bcb3-41de-8c0d-fb1d33403ba0");
-                        JSONObject obj = new JSONObject();
+            public void run() {
+                Looper.prepare(); //For Preparing Message Pool for the child Thread
+                HttpPost request = new HttpPost("https://webhook.site/3e55d028-bcb3-41de-8c0d-fb1d33403ba0");
+                JSONObject obj = new JSONObject();
 
-                        try {
-                            obj.put("subject", cleaning_string(_Subject));
-                            obj.put("lastname", cleaning_string(_Name));
-                            obj.put("companyname", cleaning_string(_Company));
-                            obj.put("emailaddress", cleaning_string(_Email));
-                            obj.put("telephone", cleaning_string(_Telephone));
-                            obj.put("formurl", cleaning_string(_URL));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                try {
+                    obj.put("subject", cleaning_string(_Subject));
+                    obj.put("lastname", cleaning_string(_Name));
+                    obj.put("companyname", cleaning_string(_Company));
+                    obj.put("emailaddress", cleaning_string(_Email));
+                    obj.put("telephone", cleaning_string(_Telephone));
+                    obj.put("formurl", cleaning_string(_URL));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                        System.out.println(obj);
+                System.out.println(obj);
 
-                        StringEntity params = null;
-                        try {
-                            params = new StringEntity(obj.toString());
-//                            request.addHeader("content-type", "application/json");
-//                            request.addHeader("Accept","application/json");
-                            request.setEntity(params);
+                StringEntity params = null;
+                try {
+                    params = new StringEntity(obj.toString());
+                    request.setEntity(params);
 
+                    request.setHeader("Content-type", "application/json");
+                    HttpResponse  response = httpClient.execute(request);
 
-//                            HttpResponse response = httpClient.execute(request);
-
-
-                            request.setHeader("Content-type", "application/json");
-                            HttpResponse  response = httpClient.execute(request);
-
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        } catch (ClientProtocolException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }finally {
-                            httpClient.getConnectionManager().shutdown();
-                        }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }finally {
+                    httpClient.getConnectionManager().shutdown();
+                }
 
 
-                        Looper.loop(); //Loop in the message queue
-                    }
-
-            };
-                t.start();
-//                JSONObject obj = new JSONObject();
-//
-//                try {
-//
-//                    //add json obj
-//                    obj.put("subject", cleaning_string(_Subject));
-//                    obj.put("lastname", cleaning_string(_Name));
-//                    obj.put("companyname", cleaning_string(_Company));
-//                    obj.put("emailaddress", cleaning_string(_Email));
-//                    obj.put("telephone", cleaning_string(_Telephone));
-//                    obj.put("formurl", cleaning_string(_URL));
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                System.out.println(obj);
-
-
-                setResult(RESULT_OK, result);
-                finish();
+                Looper.loop(); //Loop in the message queue
             }
-        };
 
-        btnsave.setOnClickListener(oclBtnOk);
+        };
+        t.start();
+
+        setResult(RESULT_OK, result);
+        finish();
     }
+
 
     protected String cleaning_string(String inputtext){
         String clean_string = "";
@@ -248,5 +225,23 @@ public class Main2Activity extends AppCompatActivity {
         clean_string.substring(clean_string.length() - 1, clean_string.length() );
 
         return clean_string;
+    }
+
+    //actionbar menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //inflate menu
+        getMenuInflater().inflate(R.menu.menu_2activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.save_btn){
+            save_ac_btn();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

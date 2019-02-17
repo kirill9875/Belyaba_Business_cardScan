@@ -380,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //set text to edit text
                     intent.putExtra("fname",sb.toString());
+                    intent.putExtra("type","1");
                 }
                 startActivityForResult(intent, CHOOSE_THIEF);
             }

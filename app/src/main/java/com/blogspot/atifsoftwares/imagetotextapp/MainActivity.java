@@ -146,8 +146,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 
 
@@ -306,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
-                System.out.print("Занесено в табл " + id);
+                System.out.print("Занесено в табл " + id + '\n');
             }
         } else if (resultCode == RESULT_OK){
             if (requestCode == IMAGE_PICK_GALLERY_CODE){

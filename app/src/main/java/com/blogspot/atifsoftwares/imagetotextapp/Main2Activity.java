@@ -17,15 +17,19 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.net.Uri;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Main2Activity extends AppCompatActivity {
 
+    final String SUBJECT = "Subject";
     final String NAME = "Name";
     final String COMPANY = "Company";
     final String EMAIL = "Email";
     final String TELEPHONE = "Telephone";
     final String URL = "URL";
 
-    String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "";
+    String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "",_Subject = "";
 
     public ImageView imgV;
     public TextView txt;
@@ -35,8 +39,7 @@ public class Main2Activity extends AppCompatActivity {
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String txtMain = getIntent().getStringExtra("txt");
-//        txt.setText(txt.getText().toString()+ " " +txtMain); //вот из-за этойй  залупы не робит если шо 2 активити Error over999
+//        String txtMain = getIntent().getStringExtra("txt");
 
 
         super.onCreate(savedInstanceState);
@@ -58,7 +61,7 @@ public class Main2Activity extends AppCompatActivity {
 
 
             final String[] types = new String[] {
-                    NAME, COMPANY, EMAIL, TELEPHONE, URL, "Delete"
+                    NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL, "Delete"
             };
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
@@ -105,6 +108,9 @@ public class Main2Activity extends AppCompatActivity {
                             case NAME:
                                 _Name += text + "\n";
                                 break;
+                            case SUBJECT:
+                                _Subject += text + "\n";
+                                break;
                             case COMPANY:
                                 _Company += text + "\n";
                                 break;
@@ -123,10 +129,44 @@ public class Main2Activity extends AppCompatActivity {
                     }
                 }
                 result.putExtra("Name", _Name);
+                result.putExtra("Subject", _Subject);
                 result.putExtra("Company", _Company);
                 result.putExtra("Email", _Email);
-                result.putExtra("Telephon", _Telephone);
+                result.putExtra("Telephone", _Telephone);
                 result.putExtra("URL", _URL);
+
+                //work with json
+                JSONObject obj = new JSONObject();
+
+                try {
+
+                    // clean string params
+
+                    StringBuffer stringBuffer = new StringBuffer(_Subject);
+                    String sub;
+                    if (_Subject.length() != 0) {
+                        stringBuffer.delete(_Subject.length() - 1,_Subject.length());
+                        sub = stringBuffer.toString();
+                        System.out.println(sub);
+                    }
+                    else {
+                        sub = _Subject;
+                    }
+
+                    //add json obj
+                    obj.put("subject", sub);
+                    obj.put("lastname", _Name);
+                    obj.put("companyname", _Company);
+                    obj.put("emailaddress", _Email);
+                    obj.put("telephone", _Telephone);
+                    obj.put("formurl", _URL);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println(obj);
+
 
                 setResult(RESULT_OK, result);
                 finish();

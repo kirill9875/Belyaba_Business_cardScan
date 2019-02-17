@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
 
+
         DB = dbHelper.getWritableDatabase();
 
 
@@ -131,6 +133,18 @@ public class MainActivity extends AppCompatActivity {
         } else {
             cursor.close();
         }
+
+
+
+
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageImportDialog();
+            }
+        });
 
     }
 
@@ -290,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
-                System.out.print("Занесено в табл " + id);
+                System.out.print("Занесено в табл " + id + '\n');
             }
         } else if (resultCode == RESULT_OK){
             if (requestCode == IMAGE_PICK_GALLERY_CODE){

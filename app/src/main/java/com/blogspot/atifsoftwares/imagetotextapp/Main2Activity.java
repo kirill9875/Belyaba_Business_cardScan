@@ -2,6 +2,8 @@ package com.blogspot.atifsoftwares.imagetotextapp;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,8 +19,25 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.net.Uri;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import static java.net.Proxy.Type.HTTP;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -136,36 +155,80 @@ public class Main2Activity extends AppCompatActivity {
                 result.putExtra("URL", _URL);
 
                 //work with json
-                JSONObject obj = new JSONObject();
 
-                try {
+                Thread t = new Thread(){
 
-                    // clean string params
+//                    HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead
 
-                    StringBuffer stringBuffer = new StringBuffer(_Subject);
-                    String sub;
-                    if (_Subject.length() != 0) {
-                        stringBuffer.delete(_Subject.length() - 1,_Subject.length());
-                        sub = stringBuffer.toString();
-                        System.out.println(sub);
+                    HttpClient httpClient = new DefaultHttpClient();
+
+
+
+                    public void run() {
+                        Looper.prepare(); //For Preparing Message Pool for the child Thread
+                        HttpPost request = new HttpPost("https://webhook.site/3e55d028-bcb3-41de-8c0d-fb1d33403ba0");
+                        JSONObject obj = new JSONObject();
+
+                        try {
+                            obj.put("subject", cleaning_string(_Subject));
+                            obj.put("lastname", cleaning_string(_Name));
+                            obj.put("companyname", cleaning_string(_Company));
+                            obj.put("emailaddress", cleaning_string(_Email));
+                            obj.put("telephone", cleaning_string(_Telephone));
+                            obj.put("formurl", cleaning_string(_URL));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        System.out.println(obj);
+
+                        StringEntity params = null;
+                        try {
+                            params = new StringEntity(obj.toString());
+//                            request.addHeader("content-type", "application/json");
+//                            request.addHeader("Accept","application/json");
+                            request.setEntity(params);
+
+
+//                            HttpResponse response = httpClient.execute(request);
+
+
+                            request.setHeader("Content-type", "application/json");
+                            HttpResponse  response = httpClient.execute(request);
+
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (ClientProtocolException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }finally {
+                            httpClient.getConnectionManager().shutdown();
+                        }
+
+
+                        Looper.loop(); //Loop in the message queue
                     }
-                    else {
-                        sub = _Subject;
-                    }
 
-                    //add json obj
-                    obj.put("subject", sub);
-                    obj.put("lastname", _Name);
-                    obj.put("companyname", _Company);
-                    obj.put("emailaddress", _Email);
-                    obj.put("telephone", _Telephone);
-                    obj.put("formurl", _URL);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println(obj);
+            };
+                t.start();
+//                JSONObject obj = new JSONObject();
+//
+//                try {
+//
+//                    //add json obj
+//                    obj.put("subject", cleaning_string(_Subject));
+//                    obj.put("lastname", cleaning_string(_Name));
+//                    obj.put("companyname", cleaning_string(_Company));
+//                    obj.put("emailaddress", cleaning_string(_Email));
+//                    obj.put("telephone", cleaning_string(_Telephone));
+//                    obj.put("formurl", cleaning_string(_URL));
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                System.out.println(obj);
 
 
                 setResult(RESULT_OK, result);
@@ -176,5 +239,14 @@ public class Main2Activity extends AppCompatActivity {
         btnsave.setOnClickListener(oclBtnOk);
     }
 
+    protected String cleaning_string(String inputtext){
+        String clean_string = "";
+        String[] c_s = inputtext.split("\n");
+        for(String i:c_s){
+            clean_string += i + ";";
+        }
+        clean_string.substring(clean_string.length() - 1, clean_string.length() );
 
+        return clean_string;
+    }
 }

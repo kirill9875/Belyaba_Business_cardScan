@@ -8,9 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,14 +19,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,9 +37,9 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Константы
     static final private int CHOOSE_THIEF = 21;
     static final private int ID_FOR_CARD = 9000;
-
 
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int STORAGE_REQUEST_CODE = 400;
@@ -56,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     String storagePermission[];
 
     Uri image_uri;
-    Button btnActTwo;
 
     DBHelper dbHelper;
     SQLiteDatabase DB;
@@ -68,75 +61,17 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setSubtitle("Click Image button to insert Image");
 
+        //Получение разрешений и подключение к БД
+        GetPermission();
+        ConnectDB();
 
+        //Инициализация первого активити
+        Init1activity();
 
-        //camera permission
-        cameraPermission = new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        //storage permission
-        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-        dbHelper = new DBHelper(this);
-
-        LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
-
-
-        DB = dbHelper.getWritableDatabase();
-
-
-        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
-        if (cursor.moveToFirst()) {
-            int id_id = cursor.getColumnIndex("_id");
-            int id_name = cursor.getColumnIndex("name");
-            int id_company = cursor.getColumnIndex("company");
-            int id_telephone = cursor.getColumnIndex("telephone");
-            do {
-                int id = cursor.getInt(id_id) + ID_FOR_CARD;
-                String name = cursor.getString(id_name);
-                String company = cursor.getString(id_company);
-                String telephone = cursor.getString(id_telephone);
-
-                LinearLayout horisont_liner = new LinearLayout(this);
-                horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
-                horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-                LinearLayout vertical_liner = new LinearLayout(this);
-                vertical_liner.setOrientation(LinearLayout.VERTICAL);
-                vertical_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-                TextView TextViewName = new TextView(this);
-                TextViewName.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                TextViewName.setId(id);
-                TextViewName.setText(name);
-
-                TextView TextViewCompany = new TextView(this);
-                TextViewCompany.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                TextViewCompany.setId(id);
-                TextViewCompany.setText(name);
-
-                TextView TextViewTelephone = new TextView(this);
-                TextViewTelephone.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                TextViewTelephone.setId(id);
-                TextViewTelephone.setText(name);
-
-                vertical_liner.addView(TextViewName);
-                vertical_liner.addView(TextViewCompany);
-                vertical_liner.addView(TextViewTelephone);
-
-                horisont_liner.addView(vertical_liner);
-
-                main.addView(horisont_liner);
-
-            } while (cursor.moveToNext());
-        } else {
-            cursor.close();
-        }
-
-
-
-
+        //Добавление свойств кнопке
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -227,13 +162,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestStoragePermission() {
         ActivityCompat.requestPermissions(this, storagePermission, STORAGE_REQUEST_CODE);
-
     }
 
     private boolean checkStoragePermission() {
-        boolean result = ContextCompat.checkSelfPermission(this,
+        return ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        return result;
     }
 
     private void requestCameraPermission() {
@@ -250,6 +183,87 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
         return result && result1;
     }
+
+    private void GetPermission() {
+        //camera permission
+        cameraPermission = new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        //storage permission
+        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    }
+
+    private void ConnectDB() {
+        dbHelper = new DBHelper(this);
+        DB = dbHelper.getWritableDatabase();
+    }
+
+    private void AddListenerForCard(int id) {
+        Cursor  c = DB.query(DBHelper.TABLE_NAME,null,"_id = " + Integer.toString(id),null,null,null,null);
+        if (c.moveToFirst()) {
+            int id_name = c.getColumnIndex("name");
+            int id_company = c.getColumnIndex("company");
+            int id_telephone = c.getColumnIndex("telephone");
+            String name = c.getString(id_name);
+            String company = c.getString(id_company);
+            String telephone = c.getString(id_telephone);
+        }
+    }
+
+    private void Init1activity(){
+        LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
+
+        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            int id_id = cursor.getColumnIndex("_id");
+            int id_name = cursor.getColumnIndex("name");
+            int id_company = cursor.getColumnIndex("company");
+            int id_telephone = cursor.getColumnIndex("telephone");
+            do {
+                int id = cursor.getInt(id_id) + ID_FOR_CARD;
+                String name = cursor.getString(id_name);
+                String company = cursor.getString(id_company);
+                String telephone = cursor.getString(id_telephone);
+
+                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                LinearLayout horisont_liner = new LinearLayout(this);
+                horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
+                horisont_liner.setId(id);
+                horisont_liner.setLayoutParams(p);
+
+                horisont_liner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AddListenerForCard(v.getId() - ID_FOR_CARD);
+                    }
+                });
+
+                LinearLayout vertical_liner = new LinearLayout(this);
+                vertical_liner.setOrientation(LinearLayout.VERTICAL);
+                vertical_liner.setLayoutParams(p);
+
+                TextView TextView = new TextView(this);
+                TextView.setLayoutParams(p);
+                //Имя
+                TextView.setText(name);
+                vertical_liner.addView(TextView);
+                //Компания
+                TextView.setText(company);
+                vertical_liner.addView(TextView);
+                //Телефон
+                TextView.setText(telephone);
+                vertical_liner.addView(TextView);
+
+                horisont_liner.addView(vertical_liner);
+
+                main.addView(horisont_liner);
+
+            } while (cursor.moveToNext());
+        } else {
+            cursor.close();
+        }
+    }
+
     //handle permission result
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

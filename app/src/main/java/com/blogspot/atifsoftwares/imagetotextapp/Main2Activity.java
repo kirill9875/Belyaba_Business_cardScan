@@ -58,7 +58,7 @@ public class Main2Activity extends AppCompatActivity {
 
 
             final String[] types = new String[] {
-                    NAME, COMPANY, EMAIL, TELEPHONE, URL
+                    NAME, COMPANY, EMAIL, TELEPHONE, URL, "Delete"
             };
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
@@ -117,6 +117,8 @@ public class Main2Activity extends AppCompatActivity {
                             case URL:
                                 _URL += text + "\n";
                                 break;
+                             default:
+                                 break;
                         }
                     }
                 }

@@ -200,12 +200,14 @@ public class MainActivity extends AppCompatActivity {
     private void AddListenerForCard(int id) {
         Cursor  c = DB.query(DBHelper.TABLE_NAME,null,"_id = " + Integer.toString(id),null,null,null,null);
         if (c.moveToFirst()) {
-            int id_name = c.getColumnIndex("name");
-            int id_company = c.getColumnIndex("company");
-            int id_telephone = c.getColumnIndex("telephone");
-            String name = c.getString(id_name);
-            String company = c.getString(id_company);
-            String telephone = c.getString(id_telephone);
+            Intent intent = new Intent(this, Main3Activity.class);
+            intent.putExtra("name", c.getString(c.getColumnIndex("name")));
+            intent.putExtra("company", c.getString(c.getColumnIndex("company")));
+            intent.putExtra("telephone", c.getString(c.getColumnIndex("telephone")));
+            intent.putExtra("URL", c.getString(c.getColumnIndex("URL")));
+            intent.putExtra("email", c.getString(c.getColumnIndex("email")));
+
+            startActivity(intent);
         }
     }
 
@@ -214,15 +216,11 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
         if (cursor.moveToFirst()) {
-            int id_id = cursor.getColumnIndex("_id");
-            int id_name = cursor.getColumnIndex("name");
-            int id_company = cursor.getColumnIndex("company");
-            int id_telephone = cursor.getColumnIndex("telephone");
             do {
-                int id = cursor.getInt(id_id) + ID_FOR_CARD;
-                String name = cursor.getString(id_name);
-                String company = cursor.getString(id_company);
-                String telephone = cursor.getString(id_telephone);
+                int id = cursor.getInt(cursor.getColumnIndex("_id")) + ID_FOR_CARD;
+                String name = cursor.getString(cursor.getColumnIndex("name"));
+                String company = cursor.getString(cursor.getColumnIndex("company"));
+                String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -242,17 +240,21 @@ public class MainActivity extends AppCompatActivity {
                 vertical_liner.setOrientation(LinearLayout.VERTICAL);
                 vertical_liner.setLayoutParams(p);
 
-                TextView TextView = new TextView(this);
-                TextView.setLayoutParams(p);
                 //Имя
-                TextView.setText(name);
-                vertical_liner.addView(TextView);
+                TextView TextView_name = new TextView(this);
+                TextView_name.setLayoutParams(p);
+                TextView_name.setText(name);
+                vertical_liner.addView(TextView_name);
                 //Компания
-                TextView.setText(company);
-                vertical_liner.addView(TextView);
+                TextView TextView_company = new TextView(this);
+                TextView_company.setLayoutParams(p);
+                TextView_company.setText(company);
+                vertical_liner.addView(TextView_company);
                 //Телефон
-                TextView.setText(telephone);
-                vertical_liner.addView(TextView);
+                TextView TextView_telephon = new TextView(this);
+                TextView_telephon.setLayoutParams(p);
+                TextView_telephon.setText(telephone);
+                vertical_liner.addView(TextView_telephon);
 
                 horisont_liner.addView(vertical_liner);
 
@@ -316,7 +318,6 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put(DBHelper.TELEPHONE,Telephon);
                 contentValues.put(DBHelper.URL,URL);
 
-
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
                 System.out.print("Занесено в табл " + id + '\n');
             }
@@ -326,7 +327,6 @@ public class MainActivity extends AppCompatActivity {
                 CropImage.activity(data.getData())
                         .setGuidelines(CropImageView.Guidelines.ON) //enable image guidlines
                 .start(this);
-
             }
             if (requestCode == IMAGE_PICK_CAMERA_CODE){
                 //got image from camera now crop it
@@ -340,9 +340,6 @@ public class MainActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK){
                 Intent intent = new Intent(this, Main2Activity.class);
-
-
-
 
                 Uri resultUri = result.getUri(); //get image uri
                 intent.putExtra("imageUri", resultUri.toString());

@@ -215,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void Init1activity(){
         LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
+        main.removeAllViews();
 
         Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
         if (cursor.moveToFirst()) {
@@ -393,25 +394,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
-        if (cursor.moveToFirst()) {
-            int id_id = cursor.getColumnIndex("_id");
-            int id_name = cursor.getColumnIndex("name");
-            int id_company = cursor.getColumnIndex("company");
-            int id_email = cursor.getColumnIndex("email");
-            int id_telephone = cursor.getColumnIndex("telephone");
-            int id_url = cursor.getColumnIndex("URL");
-            do {
-                int id = cursor.getInt(id_id);
-                String name = cursor.getString(id_name);
-                String company = cursor.getString(id_company);
-                String email = cursor.getString(id_email);
-                String telephone = cursor.getString(id_telephone);
-                String url = cursor.getString(id_url);
 
-            } while (cursor.moveToNext());
-        } else {
-            cursor.close();
-        }
+        Init1activity();
     }
 }

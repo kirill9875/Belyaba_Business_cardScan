@@ -164,11 +164,7 @@ public class Main2Activity extends AppCompatActivity {
 
         Thread t = new Thread(){
 
-//                    HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead
-
             HttpClient httpClient = new DefaultHttpClient();
-
-
 
             public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
@@ -221,9 +217,10 @@ public class Main2Activity extends AppCompatActivity {
         String clean_string = "";
         String[] c_s = inputtext.split("\n");
         for(String i:c_s){
-            clean_string += i + ";";
+            clean_string += i + " ";
         }
-        clean_string.substring(clean_string.length() - 1, clean_string.length() );
+//        clean_string.substring(0, clean_string.length() - 1 );
+//        clean_string.replaceFirst(".$","");
 
         return clean_string;
     }
@@ -242,7 +239,6 @@ public class Main2Activity extends AppCompatActivity {
         if (id == R.id.save_btn){
             save_ac_btn();
         }
-
         if (id == R.id.add_btn) {
             add_text();
         }

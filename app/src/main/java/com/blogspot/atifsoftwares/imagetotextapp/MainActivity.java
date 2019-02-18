@@ -211,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("telephone", c.getString(c.getColumnIndex("telephone")));
             intent.putExtra("URL", c.getString(c.getColumnIndex("URL")));
             intent.putExtra("email", c.getString(c.getColumnIndex("email")));
+            intent.putExtra("img", c.getBlob(c.getColumnIndex("img")));
 
             startActivityForResult(intent, ACTIVE2);
         }
@@ -324,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
                 String Subject = data.getStringExtra("Subject");
                 String Company = data.getStringExtra("Company");
                 String Email = data.getStringExtra("Email");
-                String Telephone = data.getStringExtra("Telephon");
+                String Telephone = data.getStringExtra("Telephone");
                 String URL = data.getStringExtra("URL");
                 Uri URI = Uri.parse(data.getStringExtra("URI"));
 

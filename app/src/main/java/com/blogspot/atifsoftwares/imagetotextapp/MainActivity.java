@@ -2,12 +2,14 @@ package com.blogspot.atifsoftwares.imagetotextapp;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -19,10 +21,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.SparseArray;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +38,7 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -204,10 +210,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, Main3Activity.class);
             intent.putExtra("id", c.getInt(c.getColumnIndex("_id")));
             intent.putExtra("name", c.getString(c.getColumnIndex("name")));
+            intent.putExtra("subject", c.getString(c.getColumnIndex("subject")));
             intent.putExtra("company", c.getString(c.getColumnIndex("company")));
             intent.putExtra("telephone", c.getString(c.getColumnIndex("telephone")));
             intent.putExtra("URL", c.getString(c.getColumnIndex("URL")));
             intent.putExtra("email", c.getString(c.getColumnIndex("email")));
+            intent.putExtra("img", c.getBlob(c.getColumnIndex("img")));
 
             startActivityForResult(intent, ACTIVE2);
         }
@@ -217,15 +225,20 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
         main.removeAllViews();
 
-        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
+        Cursor cursor = DB.query("[Cards]", null, null, null, null, null, null);
+
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex("_id")) + ID_FOR_CARD;
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 String company = cursor.getString(cursor.getColumnIndex("company"));
                 String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
+                Bitmap bitmap = getImage(cursor.getBlob(cursor.getColumnIndex("img")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams pmargin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                pmargin.setMargins(25,25,15,15);
+                p.setMargins(10,10,10,10);
 
                 LinearLayout horisont_liner = new LinearLayout(this);
                 horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
@@ -243,25 +256,43 @@ public class MainActivity extends AppCompatActivity {
                 vertical_liner.setOrientation(LinearLayout.VERTICAL);
                 vertical_liner.setLayoutParams(p);
 
+                Context theme = new ContextThemeWrapper(getBaseContext(),R.style.MyTextView);
+                Context theme_img = new ContextThemeWrapper(getBaseContext(),R.style.img);
+
+                CardView card = new CardView(this);
+                card.setLayoutParams(p);
+                card.setBackgroundResource(android.R.drawable.dialog_holo_light_frame);
+
+                //Картинка
+                ImageView img = new ImageView(theme_img);
+                img.setLayoutParams(pmargin);
+                img.setImageBitmap(bitmap);
+                horisont_liner.addView(img);
+
+
+
+
                 //Имя
-                TextView TextView_name = new TextView(this);
+                TextView TextView_name = new TextView(theme);
                 TextView_name.setLayoutParams(p);
-                TextView_name.setText(name);
+                TextView_name.setText(DeleteLastSibol(name));
                 vertical_liner.addView(TextView_name);
                 //Компания
                 TextView TextView_company = new TextView(this);
                 TextView_company.setLayoutParams(p);
-                TextView_company.setText(company);
+                TextView_company.setText("Компания: " + DeleteLastSibol(company));
                 vertical_liner.addView(TextView_company);
                 //Телефон
                 TextView TextView_telephon = new TextView(this);
                 TextView_telephon.setLayoutParams(p);
-                TextView_telephon.setText(telephone);
+                TextView_telephon.setText("Тел.: " + DeleteLastSibol(telephone));
                 vertical_liner.addView(TextView_telephon);
 
                 horisont_liner.addView(vertical_liner);
 
-                main.addView(horisont_liner);
+                card.addView(horisont_liner);
+
+                main.addView(card);
 
             } while (cursor.moveToNext());
         } else {
@@ -277,9 +308,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length >0){
                     boolean cameraAccepted = grantResults[0] ==
                             PackageManager.PERMISSION_GRANTED;
-                    boolean writeStorageAccepted = grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED;
-                    if (cameraAccepted && writeStorageAccepted){
+                    if (cameraAccepted){
                         pickCamera();
                     }
                     else {
@@ -308,28 +337,58 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == CHOOSE_THIEF) {
             if (resultCode == RESULT_OK) {
+                assert data != null;
                 String Name = data.getStringExtra("Name");
+                String Subject = data.getStringExtra("Subject");
                 String Company = data.getStringExtra("Company");
                 String Email = data.getStringExtra("Email");
-                String Telephon = data.getStringExtra("Telephon");
+                String Telephone = data.getStringExtra("Telephone");
                 String URL = data.getStringExtra("URL");
+                Uri URI = Uri.parse(data.getStringExtra("URI"));
 
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), URI);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                assert bitmap != null;
+                byte[] b = getBytes(bitmap);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.NAME,Name);
+                contentValues.put(DBHelper.SUBJECT,Subject);
                 contentValues.put(DBHelper.COMPANY,Company);
                 contentValues.put(DBHelper.EMAIL,Email);
-                contentValues.put(DBHelper.TELEPHONE,Telephon);
+                contentValues.put(DBHelper.TELEPHONE,Telephone);
                 contentValues.put(DBHelper.URL,URL);
+                contentValues.put(DBHelper.IMAGE, b);
 
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
                 System.out.print("Занесено в табл " + id + '\n');
             }
         } else if(requestCode == ACTIVE2){
             if (resultCode == RESULT_OK) {
-                Integer id = data.getIntExtra("id", -1);
-                if(id != -1){
-                    DB.delete(DBHelper.TABLE_NAME, "_id = " + id, null);
+                assert data != null;
+                String doo = data.getStringExtra("do");
+                if(doo.equals("dell")){
+                    int id = data.getIntExtra("id", -1);
+                    if(id != -1){
+                        DB.delete(DBHelper.TABLE_NAME, "_id = " + id, null);
+                    }
+                } else if (doo.equals("edit")){
+                    int id = data.getIntExtra("id", -1);
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(DBHelper.NAME, data.getStringExtra("Name"));
+                    contentValues.put(DBHelper.SUBJECT,data.getStringExtra("Subject"));
+                    contentValues.put(DBHelper.COMPANY,data.getStringExtra("Company"));
+                    contentValues.put(DBHelper.EMAIL,data.getStringExtra("Email"));
+                    contentValues.put(DBHelper.TELEPHONE,data.getStringExtra("Telephone"));
+                    contentValues.put(DBHelper.URL,data.getStringExtra("URL"));
+
+                    DB.update(DBHelper.TABLE_NAME, contentValues, "_id="+id, null);
                 }
+
             }
 
         } else if (resultCode == RESULT_OK){
@@ -380,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //set text to edit text
                     intent.putExtra("fname",sb.toString());
-                    intent.putExtra("type","1");
+                    intent.putExtra("type",1);
                 }
                 startActivityForResult(intent, CHOOSE_THIEF);
             }
@@ -397,5 +456,22 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         Init1activity();
+    }
+
+    protected static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    protected static Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
+    protected String DeleteLastSibol(String str){
+        if (str != null && str.length() > 0) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
     }
 }

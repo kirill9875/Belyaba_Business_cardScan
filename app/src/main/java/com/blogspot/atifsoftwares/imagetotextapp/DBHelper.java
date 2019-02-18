@@ -8,7 +8,7 @@ import java.sql.SQLDataException;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 3;
+    public static final int DB_VERSION = 1;
     public static final String DB_NAME = "[DBcards]";
     public static final String TABLE_NAME = "[Cards]";
 
@@ -18,7 +18,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String EMAIL = "[email]";
     public static final String TELEPHONE = "[telephone]";
     public static final String URL = "[URL]";
-    public static final String IMAGE = "[img]";
+    public static final String IMAGE_PATH = "[img_path]";
+    public static final String IMAGE_NAME = "[img_name]";
 
 
     public DBHelper(Context context){
@@ -34,13 +35,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 EMAIL + " text, " +
                 TELEPHONE + " text, " +
                 URL + " text, " +
-                IMAGE + " blob)";
+                IMAGE_NAME + " text, " +
+                IMAGE_PATH + " text)";
 
         db.execSQL(zp);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME);
+        onCreate(db);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME);
         onCreate(db);
     }

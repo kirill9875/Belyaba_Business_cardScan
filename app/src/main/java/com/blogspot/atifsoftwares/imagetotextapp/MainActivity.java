@@ -3,6 +3,7 @@ package com.blogspot.atifsoftwares.imagetotextapp;
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,6 +40,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -215,7 +220,8 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("telephone", c.getString(c.getColumnIndex("telephone")));
             intent.putExtra("URL", c.getString(c.getColumnIndex("URL")));
             intent.putExtra("email", c.getString(c.getColumnIndex("email")));
-            intent.putExtra("img", c.getBlob(c.getColumnIndex("img")));
+            intent.putExtra("img_path", c.getString(c.getColumnIndex("img_path")));
+            intent.putExtra("img_name", c.getString(c.getColumnIndex("img_name")));
 
             startActivityForResult(intent, ACTIVE2);
         }
@@ -233,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 String company = cursor.getString(cursor.getColumnIndex("company"));
                 String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
-                Bitmap bitmap = getImage(cursor.getBlob(cursor.getColumnIndex("img")));
+                Bitmap bitmap = loadImageFromStorage(cursor.getString(cursor.getColumnIndex("img_path")),  cursor.getString(cursor.getColumnIndex("img_name")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 LinearLayout.LayoutParams pmargin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -268,9 +274,6 @@ public class MainActivity extends AppCompatActivity {
                 img.setLayoutParams(pmargin);
                 img.setImageBitmap(bitmap);
                 horisont_liner.addView(img);
-
-
-
 
                 //Имя
                 TextView TextView_name = new TextView(theme);
@@ -352,9 +355,14 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Cursor c = DB.rawQuery("SELECT * FROM Cards ORDER BY _id DESC LIMIT 1;", new String[] {});
+                int lastId = -1;
+                if (c != null && c.moveToFirst()) {
+                    lastId = c.getInt(0);
+                }
+                String filename = "file"+Integer.toString(lastId+1);
+                String path = saveToInternalStorage(scaleDown(bitmap,400,true), filename);
 
-                assert bitmap != null;
-                byte[] b = getBytes(bitmap);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.NAME,Name);
                 contentValues.put(DBHelper.SUBJECT,Subject);
@@ -362,7 +370,8 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put(DBHelper.EMAIL,Email);
                 contentValues.put(DBHelper.TELEPHONE,Telephone);
                 contentValues.put(DBHelper.URL,URL);
-                contentValues.put(DBHelper.IMAGE, b);
+                contentValues.put(DBHelper.IMAGE_PATH, path);
+                contentValues.put(DBHelper.IMAGE_NAME, filename);
 
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
                 System.out.print("Занесено в табл " + id + '\n');
@@ -458,20 +467,61 @@ public class MainActivity extends AppCompatActivity {
         Init1activity();
     }
 
-    protected static byte[] getBytes(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
-    }
-
-    protected static Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
-
     protected String DeleteLastSibol(String str){
         if (str != null && str.length() > 0) {
             str = str.substring(0, str.length() - 1);
         }
         return str;
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage, String name){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,name + ".jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
+    }
+
+    private Bitmap loadImageFromStorage(String path, String name)
+        {
+            Bitmap b = null;
+            try {
+                File f=new File(path, name + ".jpg");
+                b = BitmapFactory.decodeStream(new FileInputStream(f));
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+            return b;
+    }
+
+    public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
+                                   boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
     }
 }

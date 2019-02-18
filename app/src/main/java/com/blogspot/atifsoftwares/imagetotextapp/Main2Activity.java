@@ -36,6 +36,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -279,13 +282,15 @@ public class Main2Activity extends AppCompatActivity {
         mPreviewIv = findViewById(R.id.imageIv);
 
         ll = (LinearLayout)findViewById(R.id.liner_for_edittext);
+        id = intent.getIntExtra("id", -1);
 
         //картинка
-        byte[] img = intent.getByteArrayExtra("img");
-        Bitmap bitmap = getImage(img);
+        String img_path = intent.getStringExtra("img_path");
+        String img_name = intent.getStringExtra("img_name");
+        Bitmap bitmap = loadImageFromStorage(img_path, img_name);
         mPreviewIv.setImageBitmap(bitmap);
 
-        id = intent.getIntExtra("id", -1);
+
         String Name = intent.getStringExtra("name");
         String Subject = intent.getStringExtra("subject");
         String Company = intent.getStringExtra("company");
@@ -313,10 +318,6 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
-    protected static Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
-
     protected void AddNewRow(int index, String retval){
         LinearLayout horisont_liner = new LinearLayout(this);
         horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
@@ -342,5 +343,19 @@ public class Main2Activity extends AppCompatActivity {
 
         horisont_liner.addView(et);
         ll.addView(horisont_liner);
+    }
+
+    private Bitmap loadImageFromStorage(String path, String name)
+    {
+        Bitmap b = null;
+        try {
+            File f=new File(path, name + ".jpg");
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return b;
     }
 }

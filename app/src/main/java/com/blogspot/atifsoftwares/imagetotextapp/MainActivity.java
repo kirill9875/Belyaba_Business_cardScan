@@ -236,6 +236,9 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bitmap = getImage(cursor.getBlob(cursor.getColumnIndex("img")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams pmargin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                pmargin.setMargins(25,25,15,15);
+                p.setMargins(10,10,10,10);
 
                 LinearLayout horisont_liner = new LinearLayout(this);
                 horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
@@ -262,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //Картинка
                 ImageView img = new ImageView(theme_img);
-                img.setLayoutParams(p);
+                img.setLayoutParams(pmargin);
                 img.setImageBitmap(bitmap);
                 horisont_liner.addView(img);
 

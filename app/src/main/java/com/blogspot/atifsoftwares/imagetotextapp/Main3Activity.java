@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,9 +17,12 @@ import android.widget.TextView;
 
 public class Main3Activity extends AppCompatActivity {
 
+    static final private int ACTIVE3 = 23;
+
     protected Intent result;
 
     protected String name;
+    protected String subject;
     protected String company;
     protected String telephone;
     protected String URL;
@@ -50,6 +55,7 @@ public class Main3Activity extends AppCompatActivity {
         });
 
         name = intent.getStringExtra("name");
+        subject = intent.getStringExtra("subject");
         company = intent.getStringExtra("company");
         telephone = intent.getStringExtra("telephone");
         URL = intent.getStringExtra("URL");
@@ -73,6 +79,11 @@ public class Main3Activity extends AppCompatActivity {
         TextView_name.setLayoutParams(p);
         TextView_name.setText(name);
         main.addView(TextView_name);
+        //Саб
+        TextView TextView_subject = new TextView(this);
+        TextView_subject.setLayoutParams(p);
+        TextView_subject.setText(subject);
+        main.addView(TextView_subject);
         //Компания
         TextView TextView_company = new TextView(this);
         TextView_company.setLayoutParams(p);
@@ -97,15 +108,38 @@ public class Main3Activity extends AppCompatActivity {
 
     protected void dell(int id){
         result.putExtra("id", id);
+        result.putExtra("do", "dell");
         setResult(RESULT_OK, result);
         finish();
     }
 
     protected void edit(int id){
+        Intent intent = new Intent(this, Main2Activity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("type", 3);
+        intent.putExtra("name", name);
+        intent.putExtra("subject", subject);
+        intent.putExtra("company", company);
+        intent.putExtra("telephone", telephone);
+        intent.putExtra("URL", URL);
+        intent.putExtra("email", email);
+        intent.putExtra("img", img);
 
+        startActivityForResult(intent, ACTIVE3);
     }
 
     protected static Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == ACTIVE3) {
+            if (resultCode == RESULT_OK) {
+                data.putExtra("do", "edit");
+                setResult(RESULT_OK, data);
+                finish();
+            }
+        }
     }
 }

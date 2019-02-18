@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, Main3Activity.class);
             intent.putExtra("id", c.getInt(c.getColumnIndex("_id")));
             intent.putExtra("name", c.getString(c.getColumnIndex("name")));
+            intent.putExtra("subject", c.getString(c.getColumnIndex("subject")));
             intent.putExtra("company", c.getString(c.getColumnIndex("company")));
             intent.putExtra("telephone", c.getString(c.getColumnIndex("telephone")));
             intent.putExtra("URL", c.getString(c.getColumnIndex("URL")));
@@ -289,9 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length >0){
                     boolean cameraAccepted = grantResults[0] ==
                             PackageManager.PERMISSION_GRANTED;
-                    boolean writeStorageAccepted = grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED;
-                    if (cameraAccepted && writeStorageAccepted){
+                    if (cameraAccepted){
                         pickCamera();
                     }
                     else {
@@ -336,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                assert bitmap != null;
                 byte[] b = getBytes(bitmap);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.NAME,Name);
@@ -351,10 +351,26 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if(requestCode == ACTIVE2){
             if (resultCode == RESULT_OK) {
-                Integer id = data.getIntExtra("id", -1);
-                if(id != -1){
-                    DB.delete(DBHelper.TABLE_NAME, "_id = " + id, null);
+                assert data != null;
+                String doo = data.getStringExtra("do");
+                if(doo.equals("dell")){
+                    int id = data.getIntExtra("id", -1);
+                    if(id != -1){
+                        DB.delete(DBHelper.TABLE_NAME, "_id = " + id, null);
+                    }
+                } else if (doo.equals("edit")){
+                    int id = data.getIntExtra("id", -1);
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(DBHelper.NAME, data.getStringExtra("Name"));
+                    contentValues.put(DBHelper.SUBJECT,data.getStringExtra("Subject"));
+                    contentValues.put(DBHelper.COMPANY,data.getStringExtra("Company"));
+                    contentValues.put(DBHelper.EMAIL,data.getStringExtra("Email"));
+                    contentValues.put(DBHelper.TELEPHONE,data.getStringExtra("Telephone"));
+                    contentValues.put(DBHelper.URL,data.getStringExtra("URL"));
+
+                    DB.update(DBHelper.TABLE_NAME, contentValues, "_id="+id, null);
                 }
+
             }
 
         } else if (resultCode == RESULT_OK){
@@ -405,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //set text to edit text
                     intent.putExtra("fname",sb.toString());
-                    intent.putExtra("type","1");
+                    intent.putExtra("type",1);
                 }
                 startActivityForResult(intent, CHOOSE_THIEF);
             }

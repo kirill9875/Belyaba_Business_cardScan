@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -217,13 +220,15 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
         main.removeAllViews();
 
-        Cursor  cursor = DB.query(DBHelper.TABLE_NAME,null,null,null,null,null,null);
+        Cursor cursor = DB.query("[Cards]", null, null, null, null, null, null);
+
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex("_id")) + ID_FOR_CARD;
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 String company = cursor.getString(cursor.getColumnIndex("company"));
                 String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
+                Bitmap bitmap = getImage(cursor.getBlob(cursor.getColumnIndex("img")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -242,6 +247,12 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout vertical_liner = new LinearLayout(this);
                 vertical_liner.setOrientation(LinearLayout.VERTICAL);
                 vertical_liner.setLayoutParams(p);
+
+                //Картинка
+                ImageView img = new ImageView(this);
+                img.setLayoutParams(p);
+                img.setImageBitmap(bitmap);
+                horisont_liner.addView(img);
 
                 //Имя
                 TextView TextView_name = new TextView(this);
@@ -308,18 +319,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == CHOOSE_THIEF) {
             if (resultCode == RESULT_OK) {
+                assert data != null;
                 String Name = data.getStringExtra("Name");
+                String Subject = data.getStringExtra("Subject");
                 String Company = data.getStringExtra("Company");
                 String Email = data.getStringExtra("Email");
-                String Telephon = data.getStringExtra("Telephon");
+                String Telephone = data.getStringExtra("Telephon");
                 String URL = data.getStringExtra("URL");
+                Uri URI = Uri.parse(data.getStringExtra("URI"));
 
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), URI);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                byte[] b = getBytes(bitmap);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.NAME,Name);
+                contentValues.put(DBHelper.SUBJECT,Subject);
                 contentValues.put(DBHelper.COMPANY,Company);
                 contentValues.put(DBHelper.EMAIL,Email);
-                contentValues.put(DBHelper.TELEPHONE,Telephon);
+                contentValues.put(DBHelper.TELEPHONE,Telephone);
                 contentValues.put(DBHelper.URL,URL);
+                contentValues.put(DBHelper.IMAGE, b);
 
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
                 System.out.print("Занесено в табл " + id + '\n');
@@ -397,5 +421,15 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         Init1activity();
+    }
+
+    protected static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    protected static Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }

@@ -8,15 +8,17 @@ import java.sql.SQLDataException;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 3;
     public static final String DB_NAME = "[DBcards]";
     public static final String TABLE_NAME = "[Cards]";
 
     public static final String NAME = "[name]";
+    public static final String SUBJECT = "[subject]";
     public static final String COMPANY = "[company]";
     public static final String EMAIL = "[email]";
     public static final String TELEPHONE = "[telephone]";
     public static final String URL = "[URL]";
+    public static final String IMAGE = "[img]";
 
 
     public DBHelper(Context context){
@@ -25,21 +27,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
-        System.out.print("Создание бд");
         String zp = "CREATE TABLE " + TABLE_NAME + " (_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                 NAME + " text, " +
+                SUBJECT + " text, " +
                 COMPANY + " text, " +
                 EMAIL + " text, " +
                 TELEPHONE + " text, " +
-                URL + " text)";
+                URL + " text, " +
+                IMAGE + " blob)";
 
         db.execSQL(zp);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+ DB_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME);
         onCreate(db);
     }
 }

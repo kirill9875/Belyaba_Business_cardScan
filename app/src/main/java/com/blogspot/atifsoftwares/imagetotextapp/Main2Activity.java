@@ -59,6 +59,7 @@ public class Main2Activity extends AppCompatActivity {
     ImageView mPreviewIv;
 
     String fName;
+    Uri myUri;
 
     final String[] types = new String[] {
             NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL, "Delete"
@@ -75,7 +76,7 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         Intent intent = getIntent();
         fName = intent.getStringExtra("fname");
-        Uri myUri = Uri.parse(intent.getStringExtra("imageUri"));
+        myUri = Uri.parse(intent.getStringExtra("imageUri"));
 
         mPreviewIv = findViewById(R.id.imageIv);
 
@@ -159,6 +160,7 @@ public class Main2Activity extends AppCompatActivity {
         result.putExtra("Email", _Email);
         result.putExtra("Telephone", _Telephone);
         result.putExtra("URL", _URL);
+        result.putExtra("URI", myUri.toString());
 
         //work with json
 

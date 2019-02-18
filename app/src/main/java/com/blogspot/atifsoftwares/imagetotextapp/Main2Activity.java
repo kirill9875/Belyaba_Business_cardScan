@@ -149,7 +149,7 @@ public class Main2Activity extends AppCompatActivity {
 
             public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
-//                HttpPost request = new HttpPost("https://webhook.site/3e55d028-bcb3-41de-8c0d-fb1d33403ba0");
+                HttpPost request2 = new HttpPost("https://webhook.site/a671c5f1-164c-4864-bacf-4bf873b80107");
                 HttpPost request = new HttpPost("https://salesprrest.croc.ru/api/leads");
                 JSONObject obj = new JSONObject();
 
@@ -170,9 +170,13 @@ public class Main2Activity extends AppCompatActivity {
                 try {
                     params = new StringEntity(obj.toString());
                     request.setEntity(params);
+                    request2.setEntity(params);
 
                     request.setHeader("Content-type", "application/json");
                     HttpResponse  response = httpClient.execute(request);
+
+                    request2.setHeader("Content-type", "application/json");
+                    HttpResponse  response2 = httpClient.execute(request2);
 
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -199,10 +203,12 @@ public class Main2Activity extends AppCompatActivity {
         String clean_string = "";
         String[] c_s = inputtext.split("\n");
         for(String i:c_s){
-            clean_string += i + " ";
+            clean_string += i + ";";
         }
-//        clean_string.substring(0, clean_string.length() - 1 );
-//        clean_string.replaceFirst(".$","");
+
+        if (clean_string != null && clean_string.length() > 0) {
+            clean_string = clean_string.substring(0, clean_string.length() - 1);
+        }
 
         return clean_string;
     }

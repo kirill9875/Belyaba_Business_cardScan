@@ -2,6 +2,7 @@ package com.blogspot.atifsoftwares.imagetotextapp;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,7 +21,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.SparseArray;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -233,6 +236,9 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bitmap = getImage(cursor.getBlob(cursor.getColumnIndex("img")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams pmargin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                pmargin.setMargins(25,25,15,15);
+                p.setMargins(10,10,10,10);
 
                 LinearLayout horisont_liner = new LinearLayout(this);
                 horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
@@ -250,31 +256,43 @@ public class MainActivity extends AppCompatActivity {
                 vertical_liner.setOrientation(LinearLayout.VERTICAL);
                 vertical_liner.setLayoutParams(p);
 
+                Context theme = new ContextThemeWrapper(getBaseContext(),R.style.MyTextView);
+                Context theme_img = new ContextThemeWrapper(getBaseContext(),R.style.img);
+
+                CardView card = new CardView(this);
+                card.setLayoutParams(p);
+                card.setBackgroundResource(android.R.drawable.dialog_holo_light_frame);
+
                 //Картинка
-                ImageView img = new ImageView(this);
-                img.setLayoutParams(p);
+                ImageView img = new ImageView(theme_img);
+                img.setLayoutParams(pmargin);
                 img.setImageBitmap(bitmap);
                 horisont_liner.addView(img);
 
+
+
+
                 //Имя
-                TextView TextView_name = new TextView(this);
+                TextView TextView_name = new TextView(theme);
                 TextView_name.setLayoutParams(p);
-                TextView_name.setText(name);
+                TextView_name.setText(DeleteLastSibol(name));
                 vertical_liner.addView(TextView_name);
                 //Компания
                 TextView TextView_company = new TextView(this);
                 TextView_company.setLayoutParams(p);
-                TextView_company.setText(company);
+                TextView_company.setText("Компания: " + DeleteLastSibol(company));
                 vertical_liner.addView(TextView_company);
                 //Телефон
                 TextView TextView_telephon = new TextView(this);
                 TextView_telephon.setLayoutParams(p);
-                TextView_telephon.setText(telephone);
+                TextView_telephon.setText("Тел.: " + DeleteLastSibol(telephone));
                 vertical_liner.addView(TextView_telephon);
 
                 horisont_liner.addView(vertical_liner);
 
-                main.addView(horisont_liner);
+                card.addView(horisont_liner);
+
+                main.addView(card);
 
             } while (cursor.moveToNext());
         } else {
@@ -448,5 +466,12 @@ public class MainActivity extends AppCompatActivity {
 
     protected static Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
+    protected String DeleteLastSibol(String str){
+        if (str != null && str.length() > 0) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
     }
 }

@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
                 Bitmap bitmap = loadImageFromStorage(cursor.getString(cursor.getColumnIndex("img_path")),  cursor.getString(cursor.getColumnIndex("img_name")));
 
-                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 LinearLayout.LayoutParams pmargin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 pmargin.setMargins(25,25,15,15);
                 p.setMargins(10,10,10,10);

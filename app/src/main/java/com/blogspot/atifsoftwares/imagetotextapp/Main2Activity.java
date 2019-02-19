@@ -318,6 +318,10 @@ public class Main2Activity extends AppCompatActivity {
             boolean url = validateUrl(retval);
             boolean tel = validateTel(retval);
 
+            if(!smallStr(retval)){
+                continue;
+            }
+
             if (email) {
                 AddNewRow(3,retval);
             } else if (url) {
@@ -440,6 +444,6 @@ public class Main2Activity extends AppCompatActivity {
         return (Pattern.compile("\\d{3,}")).matcher(adress).find();
     }
     public boolean smallStr ( String str ){
-        return (Pattern.compile("\\w{3,}")).matcher(str).find();
+        return (Pattern.compile("\\w{4,}")).matcher(str).find();
     }
 }

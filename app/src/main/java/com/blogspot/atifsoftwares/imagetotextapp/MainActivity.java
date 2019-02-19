@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 //Картинка
                 ImageView img = new ImageView(theme_img);
                 img.setLayoutParams(pmargin);
-                img.setImageBitmap(bitmap);
+                img.setImageBitmap(scaleDown(bitmap,400,true));
                 horisont_liner.addView(img);
 
                 //Имя
@@ -386,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
                     lastId = c.getInt(0);
                 }
                 String filename = "file"+Integer.toString(lastId+1);
-                String path = saveToInternalStorage(scaleDown(bitmap,400,true), filename);
+                String path = saveToInternalStorage(scaleDown(bitmap,800,true), filename);
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.NAME,Name);

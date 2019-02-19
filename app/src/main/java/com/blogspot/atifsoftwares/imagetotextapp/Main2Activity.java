@@ -95,7 +95,7 @@ public class Main2Activity extends AppCompatActivity {
         } else if(type == 3){
             Init1activityFrom3(intent);
         }
-//        validateUrl("13");
+
     }
 
     public void save_ac_btn() {
@@ -317,6 +317,10 @@ public class Main2Activity extends AppCompatActivity {
             boolean email = validateEmail(retval);
             boolean url = validateUrl(retval);
             boolean tel = validateTel(retval);
+
+            if (!smallStr ( retval )){
+                continue;
+            }
 
             if (email) {
                 AddNewRow(3,retval);

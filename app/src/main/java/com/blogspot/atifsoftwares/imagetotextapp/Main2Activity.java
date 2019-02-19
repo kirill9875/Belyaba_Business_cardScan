@@ -44,9 +44,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.net.Proxy.Type.HTTP;
 
@@ -310,8 +313,22 @@ public class Main2Activity extends AppCompatActivity {
         ll = (LinearLayout)findViewById(R.id.liner_for_edittext);
 
         for (String retval : fName.split("\n")) {
-            AddNewRow(0,retval);
+
+            boolean email = validateEmail(retval);
+            boolean url = validateUrl(retval);
+            boolean tel = validateTel(retval);
+
+            if (email) {
+                AddNewRow(3,retval);
+            } else if (url) {
+                AddNewRow(5,retval);
+            } else if (tel) {
+                AddNewRow(4,retval);
+            } else {
+                AddNewRow(0,retval);
+            }
         }
+
         mPreviewIv.setImageURI(myUri);
 
     }
@@ -328,7 +345,6 @@ public class Main2Activity extends AppCompatActivity {
         String img_name = intent.getStringExtra("img_name");
         Bitmap bitmap = loadImageFromStorage(img_path, img_name);
         mPreviewIv.setImageBitmap(bitmap);
-
 
         String Name = intent.getStringExtra("name");
         String Subject = intent.getStringExtra("subject");
@@ -396,5 +412,24 @@ public class Main2Activity extends AppCompatActivity {
             e.printStackTrace();
         }
         return b;
+    }
+
+
+    public boolean validateUrl(String adress){
+        return android.util.Patterns.WEB_URL.matcher(adress).matches();
+    }
+    public boolean validateEmail(String adress){
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(adress).matches();
+    }
+    public boolean validateTel(String adress){
+        return android.util.Patterns.PHONE .matcher(adress).matches();
+    }
+
+
+    public void smallStr ( String str ){
+
+        if (str.length() <= 3 ){
+            //del liner
+        }
     }
 }

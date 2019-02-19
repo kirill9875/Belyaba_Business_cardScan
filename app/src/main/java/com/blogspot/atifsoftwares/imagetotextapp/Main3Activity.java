@@ -17,6 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 public class Main3Activity extends AppCompatActivity {
 
     static final private int ACTIVE3 = 23;
@@ -29,7 +33,8 @@ public class Main3Activity extends AppCompatActivity {
     protected String telephone;
     protected String URL;
     protected String email;
-    protected byte[] img;
+    protected String img_path;
+    protected String img_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +67,10 @@ public class Main3Activity extends AppCompatActivity {
         telephone = intent.getStringExtra("telephone");
         URL = intent.getStringExtra("URL");
         email = intent.getStringExtra("email");
-        img = intent.getByteArrayExtra("img");
+        img_path = intent.getStringExtra("img_path");
+        img_name = intent.getStringExtra("img_name");
 
-        Bitmap bitmap = getImage(img);
+        Bitmap bitmap = loadImageFromStorage(img_path, img_name);
 
         LinearLayout main = (LinearLayout)findViewById(R.id.MainView);
 
@@ -150,14 +156,12 @@ public class Main3Activity extends AppCompatActivity {
         intent.putExtra("telephone", telephone);
         intent.putExtra("URL", URL);
         intent.putExtra("email", email);
-        intent.putExtra("img", img);
+        intent.putExtra("img_path", img_path);
+        intent.putExtra("img_name", img_name);
 
         startActivityForResult(intent, ACTIVE3);
     }
 
-    protected static Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -168,5 +172,19 @@ public class Main3Activity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    private Bitmap loadImageFromStorage(String path, String name)
+    {
+        Bitmap b = null;
+        try {
+            File f=new File(path, name + ".jpg");
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return b;
     }
 }

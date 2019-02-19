@@ -78,7 +78,7 @@ public class Main2Activity extends AppCompatActivity {
     Uri myUri;
 
     final String[] types = new String[] {
-            NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL, "Delete"
+            NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL
     };
 
     public LinearLayout ll;

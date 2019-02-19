@@ -29,9 +29,12 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -149,34 +152,70 @@ public class Main2Activity extends AppCompatActivity {
 
             public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
-                HttpPost request2 = new HttpPost("https://webhook.site/a671c5f1-164c-4864-bacf-4bf873b80107");
+
                 HttpPost request = new HttpPost("https://salesprrest.croc.ru/api/leads");
+
+                HttpPost request2 = new HttpPost("https://webhook.site/9145bd21-08e8-4d93-a7c9-900b8429d297");
+//                HttpPost request = new HttpPost("https://salesprrest.croc.ru/api/leads");
+
                 JSONObject obj = new JSONObject();
 
+
                 try {
+
+                    JSONArray notebookUsers = new JSONArray();
+                    notebookUsers.put("email@address.com");
+                    notebookUsers.put("admin@example.com");
+
+
                     obj.put("subject", cleaning_string(_Subject));
                     obj.put("lastname", cleaning_string(_Name));
                     obj.put("companyname", cleaning_string(_Company));
                     obj.put("emailaddress", cleaning_string(_Email));
                     obj.put("telephone", cleaning_string(_Telephone));
+                    obj.put("mobilephone", "");
+
+                    // add new type
+                    obj.put("description", cleaning_string(_Telephone));
+                    obj.put("notificationreceivers",notebookUsers);
                     obj.put("formurl", cleaning_string(_URL));
+
+                    obj.put("direction","OBA");
+                    obj.put("roistat","1049");
+                    obj.put("ClientIDMetrika","12345");
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 System.out.println(obj);
 
+
                 StringEntity params = null;
                 try {
                     params = new StringEntity(obj.toString());
+
                     request.setEntity(params);
                     request2.setEntity(params);
 
                     request.setHeader("Content-type", "application/json");
+
                     HttpResponse  response = httpClient.execute(request);
 
-                    request2.setHeader("Content-type", "application/json");
                     HttpResponse  response2 = httpClient.execute(request2);
+
+                    request2.setHeader("Content-Type", "application/json");
+
+                    String responseBody = EntityUtils.toString(response.getEntity());
+                    String responseBody2 = EntityUtils.toString(response2.getEntity());
+
+                    int code = response.getStatusLine().getStatusCode();
+                    int code2 = response2.getStatusLine().getStatusCode();
+
+                    System.out.println("Answer Server: "+ responseBody + " " + code);
+                    System.out.println("Answer Server: "+ responseBody2 + " " + code2);
+
+
 
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();

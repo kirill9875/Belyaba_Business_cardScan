@@ -57,6 +57,7 @@ import static java.net.Proxy.Type.HTTP;
 
 public class Main2Activity extends AppCompatActivity {
 
+
     final String SUBJECT = "Subject";
     final String NAME = "Name";
     final String COMPANY = "Company";
@@ -66,6 +67,7 @@ public class Main2Activity extends AppCompatActivity {
 
     int id = -1;
     String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "",_Subject = "";
+
 
     int type = -1;
     int idtext = 4000;
@@ -84,8 +86,6 @@ public class Main2Activity extends AppCompatActivity {
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         Intent intent = getIntent();
@@ -95,7 +95,7 @@ public class Main2Activity extends AppCompatActivity {
         } else if(type == 3){
             Init1activityFrom3(intent);
         }
-
+//        validateUrl("13");
     }
 
     public void save_ac_btn() {
@@ -235,7 +235,6 @@ public class Main2Activity extends AppCompatActivity {
                     httpClient.getConnectionManager().shutdown();
                 }
 
-
                 Looper.loop(); //Loop in the message queue
             }
 
@@ -277,7 +276,6 @@ public class Main2Activity extends AppCompatActivity {
         if (id == R.id.add_btn) {
             add_text();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -391,15 +389,11 @@ public class Main2Activity extends AppCompatActivity {
 
         horisont_liner.addView(spin);
 
-
-
-
         EditText et = new EditText(this);
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         et.setLayoutParams(p);
         et.setText(retval);
         et.setId(idtext++);
-
 
         horisont_liner.addView(et);
 
@@ -436,22 +430,16 @@ public class Main2Activity extends AppCompatActivity {
         return b;
     }
 
-
     public boolean validateUrl(String adress){
-        return android.util.Patterns.WEB_URL.matcher(adress).matches();
+        return (Pattern.compile("ttp|ww")).matcher(adress).find();
     }
     public boolean validateEmail(String adress){
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(adress).matches();
+        return (Pattern.compile("@")).matcher(adress).find();
     }
     public boolean validateTel(String adress){
-        return android.util.Patterns.PHONE .matcher(adress).matches();
+        return (Pattern.compile("\\d{3,}")).matcher(adress).find();
     }
-
-
-    public void smallStr ( String str ){
-
-        if (str.length() <= 3 ){
-            //del liner
-        }
+    public boolean smallStr ( String str ){
+        return (Pattern.compile("\\w{3,}")).matcher(str).find();
     }
 }

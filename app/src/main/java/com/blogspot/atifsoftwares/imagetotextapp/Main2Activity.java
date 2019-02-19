@@ -1,6 +1,7 @@
 package com.blogspot.atifsoftwares.imagetotextapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -376,7 +378,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void AddNewRow(int index, String retval){
         LinearLayout horisont_liner = new LinearLayout(this);
         horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
-        horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         Spinner spin = new Spinner(this);
         spin.setId(idspinn++);
@@ -389,14 +391,34 @@ public class Main2Activity extends AppCompatActivity {
 
         horisont_liner.addView(spin);
 
+
+
+
         EditText et = new EditText(this);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         et.setLayoutParams(p);
         et.setText(retval);
         et.setId(idtext++);
 
 
         horisont_liner.addView(et);
+
+        Button del = new Button(this);
+
+        //del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        del.setText("x");
+
+        del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.print(1);
+                View par = (View) v.getParent();
+                View par_par = (View) par.getParent();
+                ((LinearLayout)par_par).removeView(par);
+            }
+        });
+
+        horisont_liner.addView(del);
         ll.addView(horisont_liner);
     }
 

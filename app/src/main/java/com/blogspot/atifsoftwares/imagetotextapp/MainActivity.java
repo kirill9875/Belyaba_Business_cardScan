@@ -299,6 +299,31 @@ public class MainActivity extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         } else {
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            p.setMargins(20,10,20,10);
+
+            LinearLayout vertical_liner = new LinearLayout(this);
+            vertical_liner.setOrientation(LinearLayout.VERTICAL);
+            vertical_liner.setLayoutParams(p);
+
+            CardView card = new CardView(this);
+            card.setLayoutParams(p);
+            card.setBackgroundResource(android.R.drawable.dialog_holo_light_frame);
+
+            Context theme = new ContextThemeWrapper(getBaseContext(),R.style.MyTextView);
+            TextView TextView_name = new TextView(theme);
+            TextView_name.setLayoutParams(p);
+            TextView_name.setText("Визитки не найдены");
+            vertical_liner.addView(TextView_name);
+
+            TextView TextView_company = new TextView(this);
+            TextView_company.setLayoutParams(p);
+            TextView_company.setText("Вы можете добавить визитку, нажав на значек камеры :)");
+            vertical_liner.addView(TextView_company);
+
+            card.addView(vertical_liner);
+            main.addView(card);
+
             cursor.close();
         }
     }

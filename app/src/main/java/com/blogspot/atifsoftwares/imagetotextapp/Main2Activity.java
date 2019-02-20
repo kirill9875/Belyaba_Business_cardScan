@@ -282,28 +282,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void add_text() {
-        LinearLayout horisont_liner = new LinearLayout(this);
-        horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
-        horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        Spinner spin = new Spinner(this);
-        spin.setId(idspinn++);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spin.setAdapter(adapter);
-
-        horisont_liner.addView(spin);
-
-        EditText et = new EditText(this);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        et.setLayoutParams(p);
-        et.setId(idtext++);
-
-        horisont_liner.addView(et);
-        ll.addView(horisont_liner);
-
+        AddNewRow(0,"   ");
     }
 
     protected void Init1activityFrom1(Intent intent) {

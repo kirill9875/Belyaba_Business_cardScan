@@ -240,11 +240,11 @@ public class MainActivity extends AppCompatActivity {
                 String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
                 Bitmap bitmap = loadImageFromStorage(cursor.getString(cursor.getColumnIndex("img_path")),  cursor.getString(cursor.getColumnIndex("img_name")));
 
-                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
                 LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 LinearLayout.LayoutParams p3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams p4 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams p5 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams p4 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0f);
+                LinearLayout.LayoutParams p5 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
                 p2.setMargins(20,0,0,0);
                 p3.setMargins(30,40,30,30);
@@ -252,9 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 Context text_title = new ContextThemeWrapper(getBaseContext(),R.style.textviewtitle);
                 Context text = new ContextThemeWrapper(getBaseContext(),R.style.textview);
                 Context border = new ContextThemeWrapper(getBaseContext(),R.style.border_bottom);
-                Context image = new ContextThemeWrapper(getBaseContext(),R.style.img);
                 Context d = new ContextThemeWrapper(getBaseContext(),R.style.data);
-                Context left = new ContextThemeWrapper(getBaseContext(),R.style.left);
 
                 LinearLayout vertical_Main = new LinearLayout(this);
                 vertical_Main.setOrientation(LinearLayout.VERTICAL);
@@ -267,39 +265,40 @@ public class MainActivity extends AppCompatActivity {
                 horisont_liner.setLayoutParams(p3);
                 vertical_Main.addView(horisont_liner);
 
-                LinearLayout vertical_main = new LinearLayout(left);
+                LinearLayout vertical_main = new LinearLayout(this);
                 vertical_main.setOrientation(LinearLayout.VERTICAL);
+                vertical_main.setLayoutParams(p);
                 horisont_liner.addView(vertical_main);
 
                 LinearLayout vertical_text = new LinearLayout(this);
                 vertical_text.setOrientation(LinearLayout.VERTICAL);
-                vertical_text.setLayoutParams(p);
                 vertical_main.addView(vertical_text);
                 //Дата
-                TextView TextView_data = new TextView(d);
-                TextView_data.setLayoutParams(p5);
+                TextView TextView_data = new TextView(this);
                 TextView_data.setText("10min");
                 vertical_main.addView(TextView_data);
 
                 //Имя
                 TextView TextView_name = new TextView(text_title);
-                TextView_name.setLayoutParams(p);
                 TextView_name.setText(DeleteLastSibol(name));
                 vertical_text.addView(TextView_name);
                 //Должность
                 TextView TextView_company = new TextView(text);
-                TextView_company.setLayoutParams(p);
                 TextView_company.setText(DeleteLastSibol(company));
                 vertical_text.addView(TextView_company);
                 //Телефон
                 TextView TextView_telephon = new TextView(text);
-                TextView_telephon.setLayoutParams(p);
                 TextView_telephon.setText(DeleteLastSibol(telephone));
                 vertical_text.addView(TextView_telephon);
 
-                ImageView img = new ImageView(image);
+                LinearLayout vertical_img = new LinearLayout(this);
+                vertical_img.setOrientation(LinearLayout.VERTICAL);
+                vertical_img.setLayoutParams(p4);
+                horisont_liner.addView(vertical_img);
+
+                ImageView img = new ImageView(this);
                 img.setImageBitmap(scaleDown(bitmap,400,true));
-                horisont_liner.addView(img);
+                vertical_img.addView(img);
 
                 TextView v = new TextView(border);
                 vertical_Main.addView(v);
@@ -314,30 +313,11 @@ public class MainActivity extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         } else {
-            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            p.setMargins(20,10,20,10);
-
-            LinearLayout vertical_liner = new LinearLayout(this);
-            vertical_liner.setOrientation(LinearLayout.VERTICAL);
-            vertical_liner.setLayoutParams(p);
-
-            CardView card = new CardView(this);
-            card.setLayoutParams(p);
-            card.setBackgroundResource(android.R.drawable.dialog_holo_light_frame);
-
-            Context theme = new ContextThemeWrapper(getBaseContext(),R.style.textviewtitle);
-            TextView TextView_name = new TextView(theme);
-            TextView_name.setLayoutParams(p);
-            TextView_name.setText("Визитки не найдены");
-            vertical_liner.addView(TextView_name);
-
-            TextView TextView_company = new TextView(this);
-            TextView_company.setLayoutParams(p);
-            TextView_company.setText("Вы можете добавить визитку, нажав на значек камеры :)");
-            vertical_liner.addView(TextView_company);
-
-            card.addView(vertical_liner);
-            main.addView(card);
+            ImageView img = new ImageView(this);
+            img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.start);
+            img.setImageBitmap(scaleDown(b,1000,true));
+            main.addView(img);
 
             cursor.close();
         }

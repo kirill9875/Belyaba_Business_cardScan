@@ -8,7 +8,7 @@ import java.sql.SQLDataException;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 1;
     public static final String DB_NAME = "[DBcards]";
     public static final String TABLE_NAME = "[Cards]";
 

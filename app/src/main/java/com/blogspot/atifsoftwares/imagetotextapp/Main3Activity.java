@@ -4,13 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStructure;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +28,7 @@ import java.io.FileNotFoundException;
 public class Main3Activity extends AppCompatActivity {
 
     static final private int ACTIVE3 = 23;
+    Intent intent = null;
 
     protected Intent result;
 
@@ -36,30 +41,15 @@ public class Main3Activity extends AppCompatActivity {
     protected String img_path;
     protected String img_name;
 
+    LinearLayout vertical_main;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
 
-        final Intent intent = getIntent();
+        intent = getIntent();
         result = new Intent();
-
-        Button btn_del = (Button)findViewById(R.id.button_delete);
-        Button btn_edit = (Button)findViewById(R.id.button_edit);
-
-        btn_del.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dell(intent.getIntExtra("id",-1));
-            }
-        });
-
-        btn_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edit(intent.getIntExtra("id",-1));
-            }
-        });
 
         name = intent.getStringExtra("name");
         subject = intent.getStringExtra("subject");
@@ -74,69 +64,29 @@ public class Main3Activity extends AppCompatActivity {
 
         LinearLayout main = (LinearLayout)findViewById(R.id.MainView);
 
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        vertical_main = new LinearLayout(this);
+        vertical_main.setOrientation(LinearLayout.VERTICAL);
+        vertical_main.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        Context theme = new ContextThemeWrapper(getBaseContext(),R.style.MyTextViewTitle);
 
         //картинка
         ImageView img_view = new ImageView(this);
-        img_view.setLayoutParams(p);
+        img_view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         img_view.setImageBitmap(bitmap);
         main.addView(img_view);
+        main.addView(vertical_main);
         //Имя
-        TextView title_TextView_name = new TextView(theme);
-        title_TextView_name.setLayoutParams(p);
-        title_TextView_name.setText("ФИО");
-        main.addView(title_TextView_name);
-        TextView TextView_name = new TextView(this);
-        TextView_name.setLayoutParams(p);
-        TextView_name.setText(name);
-        main.addView(TextView_name);
+        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.name),"Name",name);
         //Саб
-        TextView title_TextView_subject = new TextView(theme);
-        title_TextView_subject.setLayoutParams(p);
-        title_TextView_subject.setText("Должность");
-        main.addView(title_TextView_subject);
-        TextView TextView_subject = new TextView(this);
-        TextView_subject.setLayoutParams(p);
-        TextView_subject.setText(subject);
-        main.addView(TextView_subject);
+        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.job),"Subject",subject);
         //Компания
-        TextView title_TextView_company = new TextView(theme);
-        title_TextView_company.setLayoutParams(p);
-        title_TextView_company.setText("Компания");
-        main.addView(title_TextView_company);
-        TextView TextView_company = new TextView(this);
-        TextView_company.setLayoutParams(p);
-        TextView_company.setText(company);
-        main.addView(TextView_company);
+        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.company),"Company",company);
         //Телефон
-        TextView title_TextView_telephone = new TextView(theme);
-        title_TextView_telephone.setLayoutParams(p);
-        title_TextView_telephone.setText("Телефон");
-        main.addView(title_TextView_telephone);
-        TextView TextView_telephone = new TextView(this);
-        TextView_telephone.setLayoutParams(p);
-        TextView_telephone.setText(telephone);
-        main.addView(TextView_telephone);
+        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.telephone),"Telephone",telephone);
         //Почта
-        TextView title_TextView_email = new TextView(theme);
-        title_TextView_email.setLayoutParams(p);
-        title_TextView_email.setText("Почта");
-        main.addView(title_TextView_email);
-        TextView TextView_email = new TextView(this);
-        TextView_email.setLayoutParams(p);
-        TextView_email.setText(email);
-        main.addView(TextView_email);
+        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"E-mail",email);
         //URL
-        TextView title_TextView_url = new TextView(theme);
-        title_TextView_url.setLayoutParams(p);
-        title_TextView_url.setText("URL");
-        main.addView(title_TextView_url);
-        TextView TextView_url = new TextView(this);
-        TextView_url.setLayoutParams(p);
-        TextView_url.setText(URL);
-        main.addView(TextView_url);
+        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"URL",URL);
     }
 
     protected void dell(int id){
@@ -186,5 +136,73 @@ public class Main3Activity extends AppCompatActivity {
             e.printStackTrace();
         }
         return b;
+    }
+
+    private void addRow(Bitmap b, String title, String text){
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams p3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        Context theme = new ContextThemeWrapper(getBaseContext(),R.style.textviewtitle2);
+        Context border = new ContextThemeWrapper(getBaseContext(),R.style.border_bottom);
+
+        p.setMargins(40,0,0,0);
+        p2.setMargins(30,20,30,0);
+        p3.setMargins(40,5,0,20);
+
+        LinearLayout horisontal_main = new LinearLayout(this);
+        horisontal_main.setOrientation(LinearLayout.HORIZONTAL);
+        horisontal_main.setLayoutParams(p2);
+        vertical_main.addView(horisontal_main);
+
+
+        ImageView img_view = new ImageView(this);
+        img_view.setLayoutParams(new LinearLayout.LayoutParams(90,90));
+        img_view.setImageBitmap(b);
+        horisontal_main.addView(img_view);
+
+        LinearLayout vertical_text = new LinearLayout(this);
+        vertical_text.setOrientation(LinearLayout.VERTICAL);
+        vertical_text.setLayoutParams(p);
+        horisontal_main.addView(vertical_text);
+
+        TextView title_TextView_name = new TextView(theme);
+        title_TextView_name.setLayoutParams(p);
+        title_TextView_name.setText(DeleteLastSibol(text));
+        vertical_text.addView(title_TextView_name);
+
+        TextView TextView_name = new TextView(this);
+        TextView_name.setLayoutParams(p3);
+        TextView_name.setText(title);
+        vertical_text.addView(TextView_name);
+
+        TextView v = new TextView(border);
+        vertical_text.addView(v);
+    }
+
+    protected String DeleteLastSibol(String str){
+        if (str != null && str.length() > 0) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //inflate menu
+        getMenuInflater().inflate(R.menu.menu_3act, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.del){
+            dell(intent.getIntExtra("id",-1));
+        }
+        if (id == R.id.edit) {
+            edit(intent.getIntExtra("id",-1));
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

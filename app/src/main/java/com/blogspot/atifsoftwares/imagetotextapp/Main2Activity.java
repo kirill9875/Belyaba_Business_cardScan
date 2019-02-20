@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -102,16 +103,17 @@ public class Main2Activity extends AppCompatActivity {
 
         Intent result = new Intent();
 
-        View childView = null;
+        View childView_main = null;
         for(int i = 0; i < ll.getChildCount(); i++){
-            childView = ll.getChildAt(i);
-            if (childView instanceof LinearLayout){
+            childView_main = ll.getChildAt(i);
+            if (childView_main instanceof LinearLayout){
 
                 View childView_splinn = null;
                 View childView_edittext = null;
 
-                childView_splinn = ((LinearLayout) childView).getChildAt(0);
-                childView_edittext = ((LinearLayout) childView).getChildAt(1);
+                childView_splinn = ((LinearLayout) childView_main).getChildAt(0);
+                View childView = ((LinearLayout) childView_main).getChildAt(1);
+                childView_edittext = ((LinearLayout) childView).getChildAt(0);
 
                 String text = ((EditText)childView_edittext).getText().toString();
                 String position = ((Spinner)childView_splinn).getSelectedItem().toString();
@@ -318,7 +320,7 @@ public class Main2Activity extends AppCompatActivity {
             boolean url = validateUrl(retval);
             boolean tel = validateTel(retval);
 
-            if (!smallStr ( retval )){
+            if(!smallStr(retval)){
                 continue;
             }
 
@@ -378,46 +380,51 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     protected void AddNewRow(int index, String retval){
+        Context d = new ContextThemeWrapper(getBaseContext(),R.style.dell_button);
+        Context text = new ContextThemeWrapper(getBaseContext(),R.style.textview_gray);
+
+
+        LinearLayout vertical_liner = new LinearLayout(this);
+        vertical_liner.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        p.setMargins(10,30,10,30);
+        vertical_liner.setLayoutParams(p);
+
+        ll.addView(vertical_liner);
+
+        Spinner spin = new Spinner(text);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter(adapter);
+        spin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f));
+        spin.setSelection(index);
+        vertical_liner.addView(spin);
+
         LinearLayout horisont_liner = new LinearLayout(this);
         horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
         horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        Spinner spin = new Spinner(this);
-        spin.setId(idspinn++);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spin.setAdapter(adapter);
-        spin.setSelection(index);
-
-        horisont_liner.addView(spin);
+        vertical_liner.addView(horisont_liner);
 
         EditText et = new EditText(this);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        et.setLayoutParams(p);
+        et.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         et.setText(retval);
-        et.setId(idtext++);
-
         horisont_liner.addView(et);
 
-        Button del = new Button(this);
 
-        //del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        del.setText("x");
-
+        ImageButton del = new ImageButton(d);
+        del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.f));
+        del.setBackgroundResource(R.drawable.delete);
         del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.print(1);
                 View par = (View) v.getParent();
                 View par_par = (View) par.getParent();
-                ((LinearLayout)par_par).removeView(par);
+                View par_par_par = (View) par_par.getParent();
+                ((LinearLayout)par_par_par).removeView(par_par);
             }
         });
-
         horisont_liner.addView(del);
-        ll.addView(horisont_liner);
     }
 
     private Bitmap loadImageFromStorage(String path, String name)
@@ -444,6 +451,6 @@ public class Main2Activity extends AppCompatActivity {
         return (Pattern.compile("\\d{3,}")).matcher(adress).find();
     }
     public boolean smallStr ( String str ){
-        return (Pattern.compile("\\w{3,}")).matcher(str).find();
+        return (Pattern.compile("\\w{4,}")).matcher(str).find();
     }
 }

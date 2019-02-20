@@ -79,7 +79,7 @@ public class Main2Activity extends AppCompatActivity {
     Uri myUri;
 
     final String[] types = new String[] {
-            NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL, "Delete"
+            NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL
     };
 
     public LinearLayout ll;
@@ -96,23 +96,24 @@ public class Main2Activity extends AppCompatActivity {
         } else if(type == 3){
             Init1activityFrom3(intent);
         }
-//        validateUrl("13");
+
     }
 
     public void save_ac_btn() {
 
         Intent result = new Intent();
 
-        View childView = null;
+        View childView_main = null;
         for(int i = 0; i < ll.getChildCount(); i++){
-            childView = ll.getChildAt(i);
-            if (childView instanceof LinearLayout){
+            childView_main = ll.getChildAt(i);
+            if (childView_main instanceof LinearLayout){
 
                 View childView_splinn = null;
                 View childView_edittext = null;
 
-                childView_splinn = ((LinearLayout) childView).getChildAt(0);
-                childView_edittext = ((LinearLayout) childView).getChildAt(1);
+                childView_splinn = ((LinearLayout) childView_main).getChildAt(0);
+                View childView = ((LinearLayout) childView_main).getChildAt(1);
+                childView_edittext = ((LinearLayout) childView).getChildAt(0);
 
                 String text = ((EditText)childView_edittext).getText().toString();
                 String position = ((Spinner)childView_splinn).getSelectedItem().toString();
@@ -281,28 +282,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void add_text() {
-        LinearLayout horisont_liner = new LinearLayout(this);
-        horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
-        horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        Spinner spin = new Spinner(this);
-        spin.setId(idspinn++);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spin.setAdapter(adapter);
-
-        horisont_liner.addView(spin);
-
-        EditText et = new EditText(this);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        et.setLayoutParams(p);
-        et.setId(idtext++);
-
-        horisont_liner.addView(et);
-        ll.addView(horisont_liner);
-
+        AddNewRow(0,"   ");
     }
 
     protected void Init1activityFrom1(Intent intent) {
@@ -419,7 +399,8 @@ public class Main2Activity extends AppCompatActivity {
                 System.out.print(1);
                 View par = (View) v.getParent();
                 View par_par = (View) par.getParent();
-                ((LinearLayout)par_par).removeView(par);
+                View par_par_par = (View) par_par.getParent();
+                ((LinearLayout)par_par_par).removeView(par_par);
             }
         });
         horisont_liner.addView(del);

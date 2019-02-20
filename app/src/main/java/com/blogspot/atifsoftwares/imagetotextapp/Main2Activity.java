@@ -66,9 +66,9 @@ public class Main2Activity extends AppCompatActivity {
     final String TELEPHONE = "Telephone";
     final String URL = "URL";
 
+
     int id = -1;
     String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "",_Subject = "";
-
 
     int type = -1;
     int idtext = 4000;
@@ -110,12 +110,19 @@ public class Main2Activity extends AppCompatActivity {
 
                 View childView_splinn = null;
                 View childView_edittext = null;
+//                View childView_textView = null;
 
                 childView_splinn = ((LinearLayout) childView_main).getChildAt(0);
+
+//                childView_textView = ((LinearLayout) childView_main).getChildAt(0);
+
                 View childView = ((LinearLayout) childView_main).getChildAt(1);
                 childView_edittext = ((LinearLayout) childView).getChildAt(0);
 
                 String text = ((EditText)childView_edittext).getText().toString();
+
+//                String other_text = (((TextView)childView_textView).getText().toString());
+
                 String position = ((Spinner)childView_splinn).getSelectedItem().toString();
 
                 switch(position) {
@@ -137,6 +144,7 @@ public class Main2Activity extends AppCompatActivity {
                     case URL:
                         _URL += text + "\n";
                         break;
+
                     default:
                         break;
                 }
@@ -148,6 +156,7 @@ public class Main2Activity extends AppCompatActivity {
         result.putExtra("Email", _Email);
         result.putExtra("Telephone", _Telephone);
         result.putExtra("URL", _URL);
+
         if(type == 1){
             result.putExtra("URI", myUri.toString());
         } else if (type == 3){
@@ -166,10 +175,8 @@ public class Main2Activity extends AppCompatActivity {
                 HttpPost request = new HttpPost("https://salesprrest.croc.ru/api/leads");
 
                 HttpPost request2 = new HttpPost("https://webhook.site/9145bd21-08e8-4d93-a7c9-900b8429d297");
-//                HttpPost request = new HttpPost("https://salesprrest.croc.ru/api/leads");
 
                 JSONObject obj = new JSONObject();
-
 
                 try {
 
@@ -177,18 +184,17 @@ public class Main2Activity extends AppCompatActivity {
                     notebookUsers.put("email@address.com");
                     notebookUsers.put("admin@example.com");
 
-
-                    obj.put("subject", cleaning_string(_Subject));
-                    obj.put("lastname", cleaning_string(_Name));
-                    obj.put("companyname", cleaning_string(_Company));
-                    obj.put("emailaddress", cleaning_string(_Email));
-                    obj.put("telephone", cleaning_string(_Telephone));
+                    obj.put("subject", set_null_json(_Subject));
+                    obj.put("lastname", set_null_json(_Name));
+                    obj.put("companyname", set_null_json(_Company));
+                    obj.put("emailaddress", set_null_json(_Email));
+                    obj.put("telephone", set_null_json(_Telephone));
                     obj.put("mobilephone", "");
 
                     // add new type
-                    obj.put("description", cleaning_string(_Telephone));
+                    obj.put("description",cleaning_string(_Name) + cleaning_string(_Subject) + cleaning_string(_Company) + cleaning_string(_Email) + cleaning_string(_Telephone)  +  cleaning_string(_URL) );
                     obj.put("notificationreceivers",notebookUsers);
-                    obj.put("formurl", cleaning_string(_URL));
+                    obj.put("formurl", set_null_json(_URL));
 
                     obj.put("direction","OBA");
                     obj.put("roistat","1049");
@@ -199,7 +205,6 @@ public class Main2Activity extends AppCompatActivity {
                 }
 
                 System.out.println(obj);
-
 
                 StringEntity params = null;
                 try {
@@ -226,7 +231,6 @@ public class Main2Activity extends AppCompatActivity {
                     System.out.println("Answer Server: "+ responseBody2 + " " + code2);
 
 
-
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (ClientProtocolException e) {
@@ -247,6 +251,13 @@ public class Main2Activity extends AppCompatActivity {
         finish();
     }
 
+    private String set_null_json (String str){
+        String b = cleaning_string(str);
+        if ( b.length() != 0 ) {
+            return b;
+        } else return "None";
+    }
+
     protected String cleaning_string(String inputtext){
         String clean_string = "";
         String[] c_s = inputtext.split("\n");
@@ -260,7 +271,6 @@ public class Main2Activity extends AppCompatActivity {
 
         return clean_string;
     }
-
     //actionbar menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -276,14 +286,11 @@ public class Main2Activity extends AppCompatActivity {
             save_ac_btn();
         }
         if (id == R.id.add_btn) {
-            add_text();
+            AddNewRow(0,"   ");
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void add_text() {
-        AddNewRow(0,"   ");
-    }
 
     protected void Init1activityFrom1(Intent intent) {
         fName = intent.getStringExtra("fname");
@@ -302,7 +309,6 @@ public class Main2Activity extends AppCompatActivity {
             if(!smallStr(retval)){
                 continue;
             }
-
             if (email) {
                 AddNewRow(3,retval);
             } else if (url) {
@@ -314,8 +320,10 @@ public class Main2Activity extends AppCompatActivity {
             }
         }
 
-        mPreviewIv.setImageURI(myUri);
+        //Set Other
+//        AddNewRow(-1,fName);
 
+        mPreviewIv.setImageURI(myUri);
     }
 
     protected void Init1activityFrom3(Intent intent) {
@@ -356,12 +364,13 @@ public class Main2Activity extends AppCompatActivity {
         for(String retval: URL.split("\n")){
             AddNewRow(5,retval);
         }
+
+
     }
 
     protected void AddNewRow(int index, String retval){
         Context d = new ContextThemeWrapper(getBaseContext(),R.style.dell_button);
         Context text = new ContextThemeWrapper(getBaseContext(),R.style.textview_gray);
-
 
         LinearLayout vertical_liner = new LinearLayout(this);
         vertical_liner.setOrientation(LinearLayout.VERTICAL);
@@ -379,6 +388,16 @@ public class Main2Activity extends AppCompatActivity {
         spin.setSelection(index);
         vertical_liner.addView(spin);
 
+//        if (index == -1 ){
+//        TextView textView = new TextView(this);
+//        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,0));
+//        textView.setText("Other");
+//        vertical_liner.addView(textView);
+//
+//        } else {
+//            //add spinner
+//        }
+
         LinearLayout horisont_liner = new LinearLayout(this);
         horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
         horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -388,7 +407,6 @@ public class Main2Activity extends AppCompatActivity {
         et.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         et.setText(retval);
         horisont_liner.addView(et);
-
 
         ImageButton del = new ImageButton(d);
         del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.f));

@@ -154,7 +154,7 @@ public class Main2Activity extends AppCompatActivity {
 
         //work with json
 
-        Thread t = new Thread(){
+        /*Thread t = new Thread(){
 
             HttpClient httpClient = new DefaultHttpClient();
 
@@ -239,7 +239,7 @@ public class Main2Activity extends AppCompatActivity {
             }
 
         };
-        t.start();
+        t.start();*/
 
         setResult(RESULT_OK, result);
         finish();

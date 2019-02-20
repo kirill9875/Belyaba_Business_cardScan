@@ -1,25 +1,45 @@
-<resources>
-
-    <!-- Base application theme. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyTextView" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="textviewtitle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textSize">23sp</item>
+        <item name="android:textColor">#000</item>
+    </style>
+
+    <style name="b" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">#000</item>
+    </style>
+
+    <style name="textviewtitle2" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#000</item>
     </style>
-    <style name="MyTextViewTitle" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:textSize">20sp</item>
+
+    <style name="textview" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">#000</item>
     </style>
-    <style name="img" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:scaleType">centerInside</item>
-        <item name="android:width">50sp</item>
-        <item name="android:height">50sp</item>
+
+    <style name="textview_gray" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">#80000000</item>
     </style>
+
+
+    <style name="dell_button" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">@drawable/iconswitchesalt</item>
+    </style>
+
+    <style name="data" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:gravity">bottom</item>
+    </style>
+
+    <style name="border_bottom" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">1dp</item>
+        <item name="android:background">#19000000</item>
+    </style>
+
 </resources>

@@ -103,16 +103,17 @@ public class Main2Activity extends AppCompatActivity {
 
         Intent result = new Intent();
 
-        View childView = null;
+        View childView_main = null;
         for(int i = 0; i < ll.getChildCount(); i++){
-            childView = ll.getChildAt(i);
-            if (childView instanceof LinearLayout){
+            childView_main = ll.getChildAt(i);
+            if (childView_main instanceof LinearLayout){
 
                 View childView_splinn = null;
                 View childView_edittext = null;
 
-                childView_splinn = ((LinearLayout) childView).getChildAt(0);
-                childView_edittext = ((LinearLayout) childView).getChildAt(1);
+                childView_splinn = ((LinearLayout) childView_main).getChildAt(0);
+                View childView = ((LinearLayout) childView_main).getChildAt(1);
+                childView_edittext = ((LinearLayout) childView).getChildAt(0);
 
                 String text = ((EditText)childView_edittext).getText().toString();
                 String position = ((Spinner)childView_splinn).getSelectedItem().toString();
@@ -419,7 +420,8 @@ public class Main2Activity extends AppCompatActivity {
                 System.out.print(1);
                 View par = (View) v.getParent();
                 View par_par = (View) par.getParent();
-                ((LinearLayout)par_par).removeView(par);
+                View par_par_par = (View) par_par.getParent();
+                ((LinearLayout)par_par_par).removeView(par_par);
             }
         });
         horisont_liner.addView(del);

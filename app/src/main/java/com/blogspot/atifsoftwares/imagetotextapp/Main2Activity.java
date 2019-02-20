@@ -79,7 +79,7 @@ public class Main2Activity extends AppCompatActivity {
     Uri myUri;
 
     final String[] types = new String[] {
-            NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL, "Delete"
+            NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL
     };
 
     public LinearLayout ll;
@@ -96,7 +96,7 @@ public class Main2Activity extends AppCompatActivity {
         } else if(type == 3){
             Init1activityFrom3(intent);
         }
-//        validateUrl("13");
+
     }
 
     public void save_ac_btn() {

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -318,6 +319,10 @@ public class Main2Activity extends AppCompatActivity {
             boolean url = validateUrl(retval);
             boolean tel = validateTel(retval);
 
+            if(!smallStr(retval)){
+                continue;
+            }
+
             if (email) {
                 AddNewRow(3,retval);
             } else if (url) {
@@ -374,34 +379,40 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     protected void AddNewRow(int index, String retval){
+        Context d = new ContextThemeWrapper(getBaseContext(),R.style.dell_button);
+        Context text = new ContextThemeWrapper(getBaseContext(),R.style.textview_gray);
+
+
+        LinearLayout vertical_liner = new LinearLayout(this);
+        vertical_liner.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        p.setMargins(10,30,10,30);
+        vertical_liner.setLayoutParams(p);
+
+        ll.addView(vertical_liner);
+
+        Spinner spin = new Spinner(text);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter(adapter);
+        spin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f));
+        spin.setSelection(index);
+        vertical_liner.addView(spin);
+
         LinearLayout horisont_liner = new LinearLayout(this);
         horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
         horisont_liner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        Spinner spin = new Spinner(this);
-        spin.setId(idspinn++);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spin.setAdapter(adapter);
-        spin.setSelection(index);
-
-        horisont_liner.addView(spin);
+        vertical_liner.addView(horisont_liner);
 
         EditText et = new EditText(this);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        et.setLayoutParams(p);
+        et.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         et.setText(retval);
-        et.setId(idtext++);
-
         horisont_liner.addView(et);
 
-        Button del = new Button(this);
 
-        //del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        del.setText("x");
-
+        ImageButton del = new ImageButton(d);
+        del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.f));
+        del.setBackgroundResource(R.drawable.delete);
         del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -411,9 +422,7 @@ public class Main2Activity extends AppCompatActivity {
                 ((LinearLayout)par_par).removeView(par);
             }
         });
-
         horisont_liner.addView(del);
-        ll.addView(horisont_liner);
     }
 
     private Bitmap loadImageFromStorage(String path, String name)
@@ -440,6 +449,6 @@ public class Main2Activity extends AppCompatActivity {
         return (Pattern.compile("\\d{3,}")).matcher(adress).find();
     }
     public boolean smallStr ( String str ){
-        return (Pattern.compile("\\w{3,}")).matcher(str).find();
+        return (Pattern.compile("\\w{4,}")).matcher(str).find();
     }
 }

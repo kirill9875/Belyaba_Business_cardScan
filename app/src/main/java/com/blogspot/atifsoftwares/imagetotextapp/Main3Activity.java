@@ -40,6 +40,7 @@ public class Main3Activity extends AppCompatActivity {
     protected String email;
     protected String img_path;
     protected String img_name;
+    protected String other;
 
     LinearLayout vertical_main;
 
@@ -59,6 +60,7 @@ public class Main3Activity extends AppCompatActivity {
         email = intent.getStringExtra("email");
         img_path = intent.getStringExtra("img_path");
         img_name = intent.getStringExtra("img_name");
+        other = intent.getStringExtra("other");
 
         Bitmap bitmap = loadImageFromStorage(img_path, img_name);
 
@@ -87,6 +89,8 @@ public class Main3Activity extends AppCompatActivity {
         addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"E-mail",email);
         //URL
         addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"URL",URL);
+        //Другое
+        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"Other",other);
     }
 
     protected void dell(int id){
@@ -108,6 +112,7 @@ public class Main3Activity extends AppCompatActivity {
         intent.putExtra("email", email);
         intent.putExtra("img_path", img_path);
         intent.putExtra("img_name", img_name);
+        intent.putExtra("other", other);
 
         startActivityForResult(intent, ACTIVE3);
     }

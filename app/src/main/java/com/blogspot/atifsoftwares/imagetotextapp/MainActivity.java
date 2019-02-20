@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("email", c.getString(c.getColumnIndex("email")));
             intent.putExtra("img_path", c.getString(c.getColumnIndex("img_path")));
             intent.putExtra("img_name", c.getString(c.getColumnIndex("img_name")));
+            intent.putExtra("other", c.getString(c.getColumnIndex("description")));
 
             startActivityForResult(intent, ACTIVE2);
         }
@@ -367,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
                 String Email = data.getStringExtra("Email");
                 String Telephone = data.getStringExtra("Telephone");
                 String URL = data.getStringExtra("URL");
+                String Other_text = data.getStringExtra("Other");
                 Uri URI = Uri.parse(data.getStringExtra("URI"));
 
                 Bitmap bitmap = null;
@@ -390,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put(DBHelper.EMAIL,Email);
                 contentValues.put(DBHelper.TELEPHONE,Telephone);
                 contentValues.put(DBHelper.URL,URL);
+                contentValues.put(DBHelper.DESCRIPTION, Other_text);
                 contentValues.put(DBHelper.IMAGE_PATH, path);
                 contentValues.put(DBHelper.IMAGE_NAME, filename);
 

@@ -143,12 +143,12 @@ public class Main3Activity extends AppCompatActivity {
         LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams p3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        Context theme = new ContextThemeWrapper(getBaseContext(),R.style.textviewtitle);
+        Context theme = new ContextThemeWrapper(getBaseContext(),R.style.textviewtitle2);
         Context border = new ContextThemeWrapper(getBaseContext(),R.style.border_bottom);
 
         p.setMargins(40,0,0,0);
-        p2.setMargins(30,40,30,40);
-        p3.setMargins(0,5,0,0);
+        p2.setMargins(30,20,30,0);
+        p3.setMargins(40,5,0,20);
 
         LinearLayout horisontal_main = new LinearLayout(this);
         horisontal_main.setOrientation(LinearLayout.HORIZONTAL);
@@ -157,7 +157,7 @@ public class Main3Activity extends AppCompatActivity {
 
 
         ImageView img_view = new ImageView(this);
-        img_view.setLayoutParams(p3);
+        img_view.setLayoutParams(new LinearLayout.LayoutParams(90,90));
         img_view.setImageBitmap(b);
         horisontal_main.addView(img_view);
 
@@ -172,7 +172,7 @@ public class Main3Activity extends AppCompatActivity {
         vertical_text.addView(title_TextView_name);
 
         TextView TextView_name = new TextView(this);
-        TextView_name.setLayoutParams(p);
+        TextView_name.setLayoutParams(p3);
         TextView_name.setText(title);
         vertical_text.addView(TextView_name);
 

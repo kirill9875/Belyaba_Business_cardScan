@@ -241,9 +241,9 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bitmap = loadImageFromStorage(cursor.getString(cursor.getColumnIndex("img_path")),  cursor.getString(cursor.getColumnIndex("img_name")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 LinearLayout.LayoutParams p3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams p4 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams p4 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 LinearLayout.LayoutParams p5 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
                 p2.setMargins(20,0,0,0);
@@ -254,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 Context border = new ContextThemeWrapper(getBaseContext(),R.style.border_bottom);
                 Context image = new ContextThemeWrapper(getBaseContext(),R.style.img);
                 Context d = new ContextThemeWrapper(getBaseContext(),R.style.data);
+                Context left = new ContextThemeWrapper(getBaseContext(),R.style.left);
 
                 LinearLayout vertical_Main = new LinearLayout(this);
                 vertical_Main.setOrientation(LinearLayout.VERTICAL);
@@ -266,9 +267,8 @@ public class MainActivity extends AppCompatActivity {
                 horisont_liner.setLayoutParams(p3);
                 vertical_Main.addView(horisont_liner);
 
-                LinearLayout vertical_main = new LinearLayout(this);
+                LinearLayout vertical_main = new LinearLayout(left);
                 vertical_main.setOrientation(LinearLayout.VERTICAL);
-                vertical_main.setLayoutParams(p2);
                 horisont_liner.addView(vertical_main);
 
                 LinearLayout vertical_text = new LinearLayout(this);
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 //Дата
                 TextView TextView_data = new TextView(d);
                 TextView_data.setLayoutParams(p5);
-                TextView_data.setText(DeleteLastSibol("10min"));
+                TextView_data.setText("10min");
                 vertical_main.addView(TextView_data);
 
                 //Имя
@@ -297,15 +297,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView_telephon.setText(DeleteLastSibol(telephone));
                 vertical_text.addView(TextView_telephon);
 
-
-                LinearLayout vertical_img = new LinearLayout(image);
-                vertical_img.setOrientation(LinearLayout.VERTICAL);
-                vertical_img.setLayoutParams(p4);
-                horisont_liner.addView(vertical_img);
                 ImageView img = new ImageView(image);
-                img.setLayoutParams(p);
                 img.setImageBitmap(scaleDown(bitmap,400,true));
-                vertical_img.addView(img);
+                horisont_liner.addView(img);
 
                 TextView v = new TextView(border);
                 vertical_Main.addView(v);

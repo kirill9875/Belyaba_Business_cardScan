@@ -143,7 +143,7 @@ public class Main3Activity extends AppCompatActivity {
         LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams p3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        Context theme = new ContextThemeWrapper(getBaseContext(),R.style.MyTextViewTitle);
+        Context theme = new ContextThemeWrapper(getBaseContext(),R.style.textviewtitle);
         Context border = new ContextThemeWrapper(getBaseContext(),R.style.border_bottom);
 
         p.setMargins(40,0,0,0);

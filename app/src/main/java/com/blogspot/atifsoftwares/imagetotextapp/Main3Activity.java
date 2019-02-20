@@ -41,6 +41,7 @@ public class Main3Activity extends AppCompatActivity {
     protected String img_path;
     protected String img_name;
     protected String other;
+    protected String dat;
 
     LinearLayout vertical_main;
 
@@ -61,6 +62,7 @@ public class Main3Activity extends AppCompatActivity {
         img_path = intent.getStringExtra("img_path");
         img_name = intent.getStringExtra("img_name");
         other = intent.getStringExtra("other");
+        dat = intent.getStringExtra("date");
 
         Bitmap bitmap = loadImageFromStorage(img_path, img_name);
 
@@ -91,6 +93,11 @@ public class Main3Activity extends AppCompatActivity {
         addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"URL",URL);
         //Другое
         addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"Other",other);
+
+        TextView TextView_name = new TextView(this);
+        TextView_name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        TextView_name.setText("Added " + dat);
+        main.addView(TextView_name);
     }
 
     protected void dell(int id){

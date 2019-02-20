@@ -46,6 +46,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -222,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("img_path", c.getString(c.getColumnIndex("img_path")));
             intent.putExtra("img_name", c.getString(c.getColumnIndex("img_name")));
             intent.putExtra("other", c.getString(c.getColumnIndex("description")));
+            intent.putExtra("date", c.getString(c.getColumnIndex("date")));
 
             startActivityForResult(intent, ACTIVE2);
         }
@@ -239,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 String company = cursor.getString(cursor.getColumnIndex("subject"));
                 String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
+                String dat = cursor.getString(cursor.getColumnIndex("date"));
                 Bitmap bitmap = loadImageFromStorage(cursor.getString(cursor.getColumnIndex("img_path")),  cursor.getString(cursor.getColumnIndex("img_name")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -276,7 +281,22 @@ public class MainActivity extends AppCompatActivity {
                 vertical_main.addView(vertical_text);
                 //Дата
                 TextView TextView_data = new TextView(this);
-                TextView_data.setText("10min");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                Date date1 = new Date();
+                try {
+                    date1 = dateFormat.parse(dat);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Date now = new Date();
+
+                int seconds = (int) ((now.getTime() - date1.getTime()) / (1000));
+
+                if (seconds < 60){TextView_data.setText(seconds + "sec"); }
+                else if (seconds < 60*60) {TextView_data.setText(((int)(seconds/60)) + "min");}
+                else if (seconds < 60*60*24) {TextView_data.setText(((int)(seconds/60/60)) + "hour");}
+                else {TextView_data.setText(((int)(seconds/60/60/24)) + "day");}
+
                 vertical_main.addView(TextView_data);
 
                 //Имя
@@ -385,6 +405,9 @@ public class MainActivity extends AppCompatActivity {
                 String filename = "file"+Integer.toString(lastId+1);
                 String path = saveToInternalStorage(scaleDown(bitmap,800,true), filename);
 
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                String currentDateandTime = sdf.format(new Date());
+
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.NAME,Name);
                 contentValues.put(DBHelper.SUBJECT,Subject);
@@ -395,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put(DBHelper.DESCRIPTION, Other_text);
                 contentValues.put(DBHelper.IMAGE_PATH, path);
                 contentValues.put(DBHelper.IMAGE_NAME, filename);
+                contentValues.put(DBHelper.DATE, currentDateandTime);
 
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
                 System.out.print("Занесено в табл " + id + '\n');

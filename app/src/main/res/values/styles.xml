@@ -1,8 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="DarkBlueView" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/Blue_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/Blue_colorPrimaryDark</item>
+        <item name="colorAccent">@color/Blue_colorAccent</item>
+        <item name="android:windowBackground">@color/darkblue_wndback</item>
+    </style>
+
+    <style name="GreenBlueView" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/Green_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/Green_colorPrimaryDark</item>
+        <item name="colorAccent">@color/Green_colorAccent</item>
+        <item name="android:windowBackground">@color/darkgren_wndback</item>
+    </style>
+
+    <style name="BlueLightView" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/Blue_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/Blue_colorPrimaryDark</item>
+        <item name="colorAccent">@color/Blue_colorAccent</item>
+        <item name="android:windowBackground">@color/light_windback</item>
+    </style>
+
+    <style name="GreelLightView" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/Green_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/Green_colorPrimaryDark</item>
+        <item name="colorAccent">@color/Green_colorAccent</item>
+        <item name="android:windowBackground">@color/light_windback</item>
     </style>
 
     <style name="textviewtitle" parent="Theme.AppCompat.Light.DarkActionBar">

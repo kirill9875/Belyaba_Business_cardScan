@@ -2,6 +2,7 @@ package com.blogspot.atifsoftwares.imagetotextapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -48,6 +49,7 @@ public class Main3Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectTheme();
         setContentView(R.layout.activity_main3);
 
         intent = getIntent();
@@ -216,5 +218,27 @@ public class Main3Activity extends AppCompatActivity {
             edit(intent.getIntExtra("id",-1));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void selectTheme() {
+        SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+        String theme = mSettings.getString(Setting.APP_PREFERENCES_THEME, "");
+        switch (theme){
+            case "0":
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                break;
+            case "1":
+                getTheme().applyStyle(R.style.GreelLightView, true);
+                break;
+            case "2":
+                getTheme().applyStyle(R.style.DarkBlueView, true);
+                break;
+            case "3":
+                getTheme().applyStyle(R.style.GreenBlueView, true);
+                break;
+            default:
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                break;
+        }
     }
 }

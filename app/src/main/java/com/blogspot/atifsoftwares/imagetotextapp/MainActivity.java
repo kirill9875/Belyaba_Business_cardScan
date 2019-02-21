@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -75,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CheckSetting();
+        selectTheme();
         setContentView(R.layout.activity_main);
 
 
@@ -97,6 +100,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void CheckSetting() {
+        SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if(!(mSettings.contains(Setting.APP_PREFERENCES_URL)) || !(mSettings.contains(Setting.APP_PREFERENCES_THEME)) ||!(mSettings.contains(Setting.APP_PREFERENCES_RU))) {
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString(Setting.APP_PREFERENCES_URL, Setting.DEFAULT_URL);
+            editor.putString(Setting.APP_PREFERENCES_THEME, Setting.DEFAULT_THEME);
+            editor.putString(Setting.APP_PREFERENCES_RU, Setting.DEFAULT_RU);
+            editor.apply();
+        }
+    }
+
 
     //actionbar menu
     @Override
@@ -114,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.settings){
             Intent intent = new Intent(this, Setting.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivityForResult(intent, ACTIVE_SETT);
         }
         return super.onOptionsItemSelected(item);
@@ -450,20 +466,25 @@ public class MainActivity extends AppCompatActivity {
 
         } else if(requestCode == ACTIVE_SETT){
             if (resultCode == RESULT_OK) {
-                DB.execSQL("DROP TABLE IF EXISTS "+ DBHelper.TABLE_NAME);
-                String zp = "CREATE TABLE " + DBHelper.TABLE_NAME + " (_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-                        DBHelper.NAME + " text, " +
-                        DBHelper.SUBJECT + " text, " +
-                        DBHelper.COMPANY + " text, " +
-                        DBHelper.EMAIL + " text, " +
-                        DBHelper.TELEPHONE + " text, " +
-                        DBHelper.URL + " text, " +
-                        DBHelper.DESCRIPTION + " text, " +
-                        DBHelper.DATE + " text, " +
-                        DBHelper.IMAGE_NAME + " text, " +
-                        DBHelper.IMAGE_PATH + " text)";
+                if(data.getStringExtra("type") == "DB") {
+                    DB.execSQL("DROP TABLE IF EXISTS " + DBHelper.TABLE_NAME);
+                    String zp = "CREATE TABLE " + DBHelper.TABLE_NAME + " (_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            DBHelper.NAME + " text, " +
+                            DBHelper.SUBJECT + " text, " +
+                            DBHelper.COMPANY + " text, " +
+                            DBHelper.EMAIL + " text, " +
+                            DBHelper.TELEPHONE + " text, " +
+                            DBHelper.URL + " text, " +
+                            DBHelper.DESCRIPTION + " text, " +
+                            DBHelper.DATE + " text, " +
+                            DBHelper.IMAGE_NAME + " text, " +
+                            DBHelper.IMAGE_PATH + " text)";
 
-                DB.execSQL(zp);
+                    DB.execSQL(zp);
+                } else if (data.getStringExtra("type") == "save") {
+                    this.finish();
+                    this.startActivity(this.getIntent());
+                }
             }
 
         } else if (resultCode == RESULT_OK){
@@ -526,10 +547,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void selectTheme() {
+        SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+        String theme = mSettings.getString(Setting.APP_PREFERENCES_THEME, "");
+        switch (theme){
+            case "0":
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                break;
+            case "1":
+                getTheme().applyStyle(R.style.GreelLightView, true);
+                break;
+            case "2":
+                getTheme().applyStyle(R.style.DarkBlueView, true);
+                break;
+            case "3":
+                getTheme().applyStyle(R.style.GreenBlueView, true);
+                break;
+            default:
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                break;
+        }
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
-
         Init1activity();
     }
 

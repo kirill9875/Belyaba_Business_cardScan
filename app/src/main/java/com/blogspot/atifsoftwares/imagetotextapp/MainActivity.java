@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase DB;
 
+    int image_id;
     String[] colors = new String[3];
 
     @Override
@@ -357,11 +358,19 @@ public class MainActivity extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         } else {
+            LinearLayout horisontal_img = new LinearLayout(this);
+            horisontal_img.setOrientation(LinearLayout.VERTICAL);
+            horisontal_img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            if(image_id == R.drawable.mosner){
+                horisontal_img.setBackgroundColor(Color.parseColor("#3a7e73"));
+            }
+            main.addView(horisontal_img);
+
             ImageView img = new ImageView(this);
             img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-            Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.start);
+            Bitmap b = BitmapFactory.decodeResource(getResources(), image_id);
             img.setImageBitmap(scaleDown(b,1000,true));
-            main.addView(img);
+            horisontal_img.addView(img);
 
             cursor.close();
         }
@@ -562,30 +571,35 @@ public class MainActivity extends AppCompatActivity {
                 colors[0] = "#000000";
                 colors[1] = "#757575";
                 colors[2] = "#757575";
+                image_id = R.drawable.mosner;
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
                 colors[0] = "#000000";
                 colors[1] = "#757575";
                 colors[2] = "#757575";
+                image_id = R.drawable.mosner;
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
                 colors[0] = "#ffffff";
                 colors[1] = "#5b7a8d";
                 colors[2] = "#707070";
+                image_id = R.drawable.clickoncamerabg;
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
                 colors[0] = "#ffffff";
                 colors[1] = "#64947b";
                 colors[2] = "#707070";
+                image_id = R.drawable.clickoncameragreen;
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
                 colors[0] = "#000000";
                 colors[1] = "#757575";
                 colors[2] = "#757575";
+                image_id = R.drawable.mosner;
                 break;
         }
     }

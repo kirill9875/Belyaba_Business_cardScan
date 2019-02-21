@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     //Константы
     static final private int CHOOSE_THIEF = 21;
     static final private int ACTIVE2 = 22;
+    static final private int ACTIVE_SETT = 23;
     static final private int ID_FOR_CARD = 9000;
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -113,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
             showImageImportDialog();
         }
         if (id == R.id.settings){
-            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, Setting.class);
+            startActivityForResult(intent, ACTIVE_SETT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -445,6 +447,24 @@ public class MainActivity extends AppCompatActivity {
                     DB.update(DBHelper.TABLE_NAME, contentValues, "_id="+id, null);
                 }
 
+            }
+
+        } else if(requestCode == ACTIVE_SETT){
+            if (resultCode == RESULT_OK) {
+                DB.execSQL("DROP TABLE IF EXISTS "+ DBHelper.TABLE_NAME);
+                String zp = "CREATE TABLE " + DBHelper.TABLE_NAME + " (_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                        DBHelper.NAME + " text, " +
+                        DBHelper.SUBJECT + " text, " +
+                        DBHelper.COMPANY + " text, " +
+                        DBHelper.EMAIL + " text, " +
+                        DBHelper.TELEPHONE + " text, " +
+                        DBHelper.URL + " text, " +
+                        DBHelper.DESCRIPTION + " text, " +
+                        DBHelper.DATE + " text, " +
+                        DBHelper.IMAGE_NAME + " text, " +
+                        DBHelper.IMAGE_PATH + " text)";
+
+                DB.execSQL(zp);
             }
 
         } else if (resultCode == RESULT_OK){

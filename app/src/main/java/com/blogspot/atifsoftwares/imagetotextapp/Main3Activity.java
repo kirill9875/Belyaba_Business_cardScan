@@ -40,7 +40,7 @@ public class Main3Activity extends AppCompatActivity {
 
     LinearLayout vertical_main;
     Bitmap[] icons = new Bitmap[7];
-    String[] colors = new String[2];
+    String[] colors = new String[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +72,17 @@ public class Main3Activity extends AppCompatActivity {
 
 
         //картинка
+        LinearLayout background_image = new LinearLayout(this);
+        background_image.setOrientation(LinearLayout.HORIZONTAL);
+        background_image.setBackgroundColor(Color.parseColor(colors[3]));
+        background_image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        main.addView(background_image);
+
         ImageView img_view = new ImageView(this);
         img_view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         img_view.setImageBitmap(bitmap);
-        main.addView(img_view);
+        background_image.addView(img_view);
+
         main.addView(vertical_main);
 
         //Имя
@@ -159,7 +166,7 @@ public class Main3Activity extends AppCompatActivity {
         Context border = new ContextThemeWrapper(getBaseContext(),R.style.border_bottom);
 
         p.setMargins(40,0,0,0);
-        p2.setMargins(30,20,30,0);
+        p2.setMargins(50,20,50,0);
         p3.setMargins(40,5,0,20);
 
         LinearLayout horisontal_main = new LinearLayout(this);
@@ -191,6 +198,7 @@ public class Main3Activity extends AppCompatActivity {
         vertical_text.addView(TextView_name);
 
         TextView v = new TextView(border);
+        v.setBackgroundColor(Color.parseColor(colors[2]));
         vertical_text.addView(v);
     }
 
@@ -233,8 +241,10 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
+                colors[2] = "#757575";
+                colors[3] = "#ffffff";
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
@@ -245,8 +255,10 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
+                colors[2] = "#757575";
+                colors[3] = "#ffffff";
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
@@ -259,6 +271,8 @@ public class Main3Activity extends AppCompatActivity {
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconpuzzledb);
                 colors[0] = "#ffffff";
                 colors[1] = "#5b7a8d";
+                colors[2] = "#707070";
+                colors[3] = "#0e1621";
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
@@ -271,6 +285,8 @@ public class Main3Activity extends AppCompatActivity {
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconpuzzledb);
                 colors[0] = "#ffffff";
                 colors[1] = "#64947b";
+                colors[2] = "#707070";
+                colors[3] = "#2a2a2a";
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
@@ -281,8 +297,10 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
+                colors[2] = "#757575";
+                colors[3] = "#ffffff";
                 break;
         }
     }

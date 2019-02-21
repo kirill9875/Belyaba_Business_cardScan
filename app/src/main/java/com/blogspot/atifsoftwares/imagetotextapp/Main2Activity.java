@@ -492,13 +492,13 @@ public class Main2Activity extends AppCompatActivity {
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);
                 icon = R.drawable.delete;
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
                 icon = R.drawable.delete;
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
                 break;
             case "2":
@@ -516,7 +516,7 @@ public class Main2Activity extends AppCompatActivity {
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
                 icon = R.drawable.delete;
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
                 break;
         }

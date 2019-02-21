@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase DB;
 
-    String[] colors = new String[2];
+    String[] colors = new String[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,8 +131,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.settings){
             Intent intent = new Intent(this, Setting.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivityForResult(intent, ACTIVE_SETT);
         }
         return super.onOptionsItemSelected(item);
@@ -346,6 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 vertical_img.addView(img);
 
                 TextView v = new TextView(border);
+                v.setBackgroundColor(Color.parseColor(colors[2]));
                 vertical_Main.addView(v);
 
 
@@ -473,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else if(requestCode == ACTIVE_SETT){
             if (resultCode == RESULT_OK) {
-                if(data.getStringExtra("type") == "DB") {
+                if(data.getStringExtra("type").equals("DB")) {
                     DB.execSQL("DROP TABLE IF EXISTS " + DBHelper.TABLE_NAME);
                     String zp = "CREATE TABLE " + DBHelper.TABLE_NAME + " (_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                             DBHelper.NAME + " text, " +
@@ -488,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
                             DBHelper.IMAGE_PATH + " text)";
 
                     DB.execSQL(zp);
-                } else if (data.getStringExtra("type") == "save") {
+                } else if (data.getStringExtra("type").equals("save")) {
                     this.finish();
                     this.startActivity(this.getIntent());
                 }
@@ -560,28 +559,33 @@ public class MainActivity extends AppCompatActivity {
         switch (theme){
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
+                colors[2] = "#757575";
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
+                colors[2] = "#757575";
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
                 colors[0] = "#ffffff";
                 colors[1] = "#5b7a8d";
+                colors[2] = "#707070";
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
                 colors[0] = "#ffffff";
                 colors[1] = "#64947b";
+                colors[2] = "#707070";
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
-                colors[0] = "#00000";
+                colors[0] = "#000000";
                 colors[1] = "#757575";
+                colors[2] = "#757575";
                 break;
         }
     }

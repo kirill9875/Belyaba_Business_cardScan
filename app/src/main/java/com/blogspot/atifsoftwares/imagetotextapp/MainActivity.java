@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -46,12 +49,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     //Константы
     static final private int CHOOSE_THIEF = 21;
     static final private int ACTIVE2 = 22;
+    static final private int ACTIVE_SETT = 23;
     static final private int ID_FOR_CARD = 9000;
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -67,11 +74,14 @@ public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase DB;
 
+    int image_id;
+    String[] colors = new String[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        CheckSetting();
+        selectTheme();
         setContentView(R.layout.activity_main);
 
 
@@ -94,6 +104,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void CheckSetting() {
+        SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if(!(mSettings.contains(Setting.APP_PREFERENCES_URL)) || !(mSettings.contains(Setting.APP_PREFERENCES_THEME)) ||!(mSettings.contains(Setting.APP_PREFERENCES_RU))) {
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString(Setting.APP_PREFERENCES_URL, Setting.DEFAULT_URL);
+            editor.putString(Setting.APP_PREFERENCES_THEME, Setting.DEFAULT_THEME);
+            editor.putString(Setting.APP_PREFERENCES_RU, Setting.DEFAULT_RU);
+            editor.apply();
+        }
+    }
+
 
     //actionbar menu
     @Override
@@ -110,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
             showImageImportDialog();
         }
         if (id == R.id.settings){
-            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, Setting.class);
+            startActivityForResult(intent, ACTIVE_SETT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -221,6 +243,8 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("email", c.getString(c.getColumnIndex("email")));
             intent.putExtra("img_path", c.getString(c.getColumnIndex("img_path")));
             intent.putExtra("img_name", c.getString(c.getColumnIndex("img_name")));
+            intent.putExtra("other", c.getString(c.getColumnIndex("description")));
+            intent.putExtra("date", c.getString(c.getColumnIndex("date")));
 
             startActivityForResult(intent, ACTIVE2);
         }
@@ -238,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 String company = cursor.getString(cursor.getColumnIndex("subject"));
                 String telephone = cursor.getString(cursor.getColumnIndex("telephone"));
+                String dat = cursor.getString(cursor.getColumnIndex("date"));
                 Bitmap bitmap = loadImageFromStorage(cursor.getString(cursor.getColumnIndex("img_path")),  cursor.getString(cursor.getColumnIndex("img_name")));
 
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -275,20 +300,39 @@ public class MainActivity extends AppCompatActivity {
                 vertical_main.addView(vertical_text);
                 //Дата
                 TextView TextView_data = new TextView(this);
-                TextView_data.setText("10min");
+                TextView_data.setTextColor(Color.parseColor(colors[1]));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                Date date1 = new Date();
+                try {
+                    date1 = dateFormat.parse(dat);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Date now = new Date();
+
+                int seconds = (int) ((now.getTime() - date1.getTime()) / (1000));
+
+                if (seconds < 60){TextView_data.setText(seconds + "sec"); }
+                else if (seconds < 60*60) {TextView_data.setText(((int)(seconds/60)) + "min");}
+                else if (seconds < 60*60*24) {TextView_data.setText(((int)(seconds/60/60)) + "hour");}
+                else {TextView_data.setText(((int)(seconds/60/60/24)) + "day");}
+
                 vertical_main.addView(TextView_data);
 
                 //Имя
                 TextView TextView_name = new TextView(text_title);
                 TextView_name.setText(DeleteLastSibol(name));
+                TextView_name.setTextColor(Color.parseColor(colors[0]));
                 vertical_text.addView(TextView_name);
                 //Должность
                 TextView TextView_company = new TextView(text);
                 TextView_company.setText(DeleteLastSibol(company));
+                TextView_company.setTextColor(Color.parseColor(colors[0]));
                 vertical_text.addView(TextView_company);
                 //Телефон
                 TextView TextView_telephon = new TextView(text);
                 TextView_telephon.setText(DeleteLastSibol(telephone));
+                TextView_telephon.setTextColor(Color.parseColor(colors[0]));
                 vertical_text.addView(TextView_telephon);
 
                 LinearLayout vertical_img = new LinearLayout(this);
@@ -301,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
                 vertical_img.addView(img);
 
                 TextView v = new TextView(border);
+                v.setBackgroundColor(Color.parseColor(colors[2]));
                 vertical_Main.addView(v);
 
 
@@ -313,11 +358,19 @@ public class MainActivity extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         } else {
+            LinearLayout horisontal_img = new LinearLayout(this);
+            horisontal_img.setOrientation(LinearLayout.VERTICAL);
+            horisontal_img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            if(image_id == R.drawable.mosner){
+                horisontal_img.setBackgroundColor(Color.parseColor("#3a7e73"));
+            }
+            main.addView(horisontal_img);
+
             ImageView img = new ImageView(this);
             img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-            Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.start);
+            Bitmap b = BitmapFactory.decodeResource(getResources(), image_id);
             img.setImageBitmap(scaleDown(b,1000,true));
-            main.addView(img);
+            horisontal_img.addView(img);
 
             cursor.close();
         }
@@ -367,6 +420,7 @@ public class MainActivity extends AppCompatActivity {
                 String Email = data.getStringExtra("Email");
                 String Telephone = data.getStringExtra("Telephone");
                 String URL = data.getStringExtra("URL");
+                String Other_text = data.getStringExtra("Other");
                 Uri URI = Uri.parse(data.getStringExtra("URI"));
 
                 Bitmap bitmap = null;
@@ -383,6 +437,9 @@ public class MainActivity extends AppCompatActivity {
                 String filename = "file"+Integer.toString(lastId+1);
                 String path = saveToInternalStorage(scaleDown(bitmap,800,true), filename);
 
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                String currentDateandTime = sdf.format(new Date());
+
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DBHelper.NAME,Name);
                 contentValues.put(DBHelper.SUBJECT,Subject);
@@ -390,8 +447,10 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put(DBHelper.EMAIL,Email);
                 contentValues.put(DBHelper.TELEPHONE,Telephone);
                 contentValues.put(DBHelper.URL,URL);
+                contentValues.put(DBHelper.DESCRIPTION, Other_text);
                 contentValues.put(DBHelper.IMAGE_PATH, path);
                 contentValues.put(DBHelper.IMAGE_NAME, filename);
+                contentValues.put(DBHelper.DATE, currentDateandTime);
 
                 long id = DB.insert(DBHelper.TABLE_NAME, null, contentValues);
                 System.out.print("Занесено в табл " + id + '\n');
@@ -418,6 +477,29 @@ public class MainActivity extends AppCompatActivity {
                     DB.update(DBHelper.TABLE_NAME, contentValues, "_id="+id, null);
                 }
 
+            }
+
+        } else if(requestCode == ACTIVE_SETT){
+            if (resultCode == RESULT_OK) {
+                if(data.getStringExtra("type").equals("DB")) {
+                    DB.execSQL("DROP TABLE IF EXISTS " + DBHelper.TABLE_NAME);
+                    String zp = "CREATE TABLE " + DBHelper.TABLE_NAME + " (_id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            DBHelper.NAME + " text, " +
+                            DBHelper.SUBJECT + " text, " +
+                            DBHelper.COMPANY + " text, " +
+                            DBHelper.EMAIL + " text, " +
+                            DBHelper.TELEPHONE + " text, " +
+                            DBHelper.URL + " text, " +
+                            DBHelper.DESCRIPTION + " text, " +
+                            DBHelper.DATE + " text, " +
+                            DBHelper.IMAGE_NAME + " text, " +
+                            DBHelper.IMAGE_PATH + " text)";
+
+                    DB.execSQL(zp);
+                } else if (data.getStringExtra("type").equals("save")) {
+                    this.finish();
+                    this.startActivity(this.getIntent());
+                }
             }
 
         } else if (resultCode == RESULT_OK){
@@ -480,10 +562,51 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void selectTheme() {
+        SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+        String theme = mSettings.getString(Setting.APP_PREFERENCES_THEME, "");
+        switch (theme){
+            case "0":
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                colors[0] = "#000000";
+                colors[1] = "#757575";
+                colors[2] = "#757575";
+                image_id = R.drawable.mosner;
+                break;
+            case "1":
+                getTheme().applyStyle(R.style.GreelLightView, true);
+                colors[0] = "#000000";
+                colors[1] = "#757575";
+                colors[2] = "#757575";
+                image_id = R.drawable.mosner;
+                break;
+            case "2":
+                getTheme().applyStyle(R.style.DarkBlueView, true);
+                colors[0] = "#ffffff";
+                colors[1] = "#5b7a8d";
+                colors[2] = "#707070";
+                image_id = R.drawable.clickoncamerabg;
+                break;
+            case "3":
+                getTheme().applyStyle(R.style.GreenBlueView, true);
+                colors[0] = "#ffffff";
+                colors[1] = "#64947b";
+                colors[2] = "#707070";
+                image_id = R.drawable.clickoncameragreen;
+                break;
+            default:
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                colors[0] = "#000000";
+                colors[1] = "#757575";
+                colors[2] = "#757575";
+                image_id = R.drawable.mosner;
+                break;
+        }
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
-
         Init1activity();
     }
 

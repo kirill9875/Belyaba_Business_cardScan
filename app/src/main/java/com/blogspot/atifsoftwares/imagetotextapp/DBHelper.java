@@ -20,6 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String URL = "[URL]";
     public static final String IMAGE_PATH = "[img_path]";
     public static final String IMAGE_NAME = "[img_name]";
+    public static final String DESCRIPTION = "[description]";
+    public static final String DATE = "[date]";
 
 
     public DBHelper(Context context){
@@ -35,6 +37,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 EMAIL + " text, " +
                 TELEPHONE + " text, " +
                 URL + " text, " +
+                DESCRIPTION + " text, " +
+                DATE + " text, " +
                 IMAGE_NAME + " text, " +
                 IMAGE_PATH + " text)";
 

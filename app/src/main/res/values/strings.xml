@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">CardScan</string>
     <string name="name">Сохранить</string>
+
+    <string-array name="them_list">
+        <item>Them1</item>
+        <item>Them2</item>
+        <item>Them3</item>
+        <item>Them4</item>
+    </string-array>
 </resources>

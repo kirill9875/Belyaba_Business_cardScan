@@ -3,9 +3,12 @@ package com.blogspot.atifsoftwares.imagetotextapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,10 +73,10 @@ public class Main2Activity extends AppCompatActivity {
 
     int id = -1;
     String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "",_Subject = "";
+    String _Other_text= "null";
 
     int type = -1;
-    int idtext = 4000;
-    int idspinn = 3000;
+    boolean mail = false;
     ImageView mPreviewIv;
 
     String fName;
@@ -83,11 +87,14 @@ public class Main2Activity extends AppCompatActivity {
     };
 
     public LinearLayout ll;
+    int icon;
+    String[] colors = new String[2];
 
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectTheme();
         setContentView(R.layout.activity_main2);
         Intent intent = getIntent();
         type = intent.getIntExtra("type", -1);
@@ -104,27 +111,26 @@ public class Main2Activity extends AppCompatActivity {
         Intent result = new Intent();
 
         View childView_main = null;
+
         for(int i = 0; i < ll.getChildCount(); i++){
             childView_main = ll.getChildAt(i);
             if (childView_main instanceof LinearLayout){
 
                 View childView_splinn = null;
                 View childView_edittext = null;
-//                View childView_textView = null;
 
                 childView_splinn = ((LinearLayout) childView_main).getChildAt(0);
-
-//                childView_textView = ((LinearLayout) childView_main).getChildAt(0);
 
                 View childView = ((LinearLayout) childView_main).getChildAt(1);
                 childView_edittext = ((LinearLayout) childView).getChildAt(0);
 
                 String text = ((EditText)childView_edittext).getText().toString();
-
-//                String other_text = (((TextView)childView_textView).getText().toString());
-
-                String position = ((Spinner)childView_splinn).getSelectedItem().toString();
-
+                String position;
+                if (childView_splinn instanceof Spinner) {
+                    position = ((Spinner) childView_splinn).getSelectedItem().toString();
+                } else {
+                    position = "other";
+                }
                 switch(position) {
                     case NAME:
                         _Name += text + "\n";
@@ -144,7 +150,8 @@ public class Main2Activity extends AppCompatActivity {
                     case URL:
                         _URL += text + "\n";
                         break;
-
+                    case "other":
+                        _Other_text = text;
                     default:
                         break;
                 }
@@ -156,6 +163,7 @@ public class Main2Activity extends AppCompatActivity {
         result.putExtra("Email", _Email);
         result.putExtra("Telephone", _Telephone);
         result.putExtra("URL", _URL);
+        result.putExtra("Other", _Other_text);
 
         if(type == 1){
             result.putExtra("URI", myUri.toString());
@@ -171,8 +179,9 @@ public class Main2Activity extends AppCompatActivity {
 
             public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
-
-                HttpPost request = new HttpPost("https://salesprrest.croc.ru/api/leads");
+                SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+                String url = mSettings.getString(Setting.APP_PREFERENCES_URL, "");
+                HttpPost request = new HttpPost(url);
 
                 HttpPost request2 = new HttpPost("https://webhook.site/9145bd21-08e8-4d93-a7c9-900b8429d297");
 
@@ -192,7 +201,7 @@ public class Main2Activity extends AppCompatActivity {
                     obj.put("mobilephone", "");
 
                     // add new type
-                    obj.put("description",cleaning_string(_Name) + cleaning_string(_Subject) + cleaning_string(_Company) + cleaning_string(_Email) + cleaning_string(_Telephone)  +  cleaning_string(_URL) );
+                    obj.put("description",cleaning_string(_Other_text));
                     obj.put("notificationreceivers",notebookUsers);
                     obj.put("formurl", set_null_json(_URL));
 
@@ -321,7 +330,7 @@ public class Main2Activity extends AppCompatActivity {
         }
 
         //Set Other
-//        AddNewRow(-1,fName);
+        AddNewRow(-9,DeleteLastSibol(fName));
 
         mPreviewIv.setImageURI(myUri);
     }
@@ -345,6 +354,7 @@ public class Main2Activity extends AppCompatActivity {
         String Email = intent.getStringExtra("email");
         String Telephone = intent.getStringExtra("telephone");
         String URL = intent.getStringExtra("URL");
+        String other = intent.getStringExtra("other");
 
         for(String retval: Name.split("\n")){
             AddNewRow(0,retval);
@@ -364,7 +374,7 @@ public class Main2Activity extends AppCompatActivity {
         for(String retval: URL.split("\n")){
             AddNewRow(5,retval);
         }
-
+        AddNewRow(-9, other);
 
     }
 
@@ -380,23 +390,32 @@ public class Main2Activity extends AppCompatActivity {
 
         ll.addView(vertical_liner);
 
-        Spinner spin = new Spinner(text);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin.setAdapter(adapter);
-        spin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f));
-        spin.setSelection(index);
-        vertical_liner.addView(spin);
 
-//        if (index == -1 ){
-//        TextView textView = new TextView(this);
-//        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,0));
-//        textView.setText("Other");
-//        vertical_liner.addView(textView);
-//
-//        } else {
-//            //add spinner
-//        }
+        if (index == -9){
+            TextView textView = new TextView(this);
+            textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,0));
+            textView.setText("Other");
+            textView.setTextColor(Color.parseColor(colors[1]));
+            vertical_liner.addView(textView);
+        } else {
+            Spinner spin = new Spinner(text);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spin.setAdapter(adapter);
+            spin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f));
+            spin.setSelection(index);
+            spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor(colors[1])); /* if you want your item to be white */
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+            vertical_liner.addView(spin);
+        }
 
         LinearLayout horisont_liner = new LinearLayout(this);
         horisont_liner.setOrientation(LinearLayout.HORIZONTAL);
@@ -406,22 +425,25 @@ public class Main2Activity extends AppCompatActivity {
         EditText et = new EditText(this);
         et.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         et.setText(retval);
+        et.setTextColor(Color.parseColor(colors[0]));
         horisont_liner.addView(et);
 
-        ImageButton del = new ImageButton(d);
-        del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.f));
-        del.setBackgroundResource(R.drawable.delete);
-        del.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.print(1);
-                View par = (View) v.getParent();
-                View par_par = (View) par.getParent();
-                View par_par_par = (View) par_par.getParent();
-                ((LinearLayout)par_par_par).removeView(par_par);
-            }
-        });
-        horisont_liner.addView(del);
+        if (index != -9) {
+            ImageButton del = new ImageButton(d);
+            del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.f));
+            del.setBackgroundResource(icon);
+            del.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.print(1);
+                    View par = (View) v.getParent();
+                    View par_par = (View) par.getParent();
+                    View par_par_par = (View) par_par.getParent();
+                    ((LinearLayout) par_par_par).removeView(par_par);
+                }
+            });
+            horisont_liner.addView(del);
+        }
     }
 
     private Bitmap loadImageFromStorage(String path, String name)
@@ -439,9 +461,16 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     public boolean validateUrl(String adress){
-        return (Pattern.compile("ttp|ww")).matcher(adress).find();
+        if(!((Pattern.compile("ttp|ww")).matcher(adress).find()) && mail){
+            return (Pattern.compile(".com|.ru")).matcher(adress).find();
+        } else {
+            return (Pattern.compile("ttp|ww")).matcher(adress).find();
+        }
     }
     public boolean validateEmail(String adress){
+        if((Pattern.compile("@")).matcher(adress).find()){
+            mail = true;
+        }
         return (Pattern.compile("@")).matcher(adress).find();
     }
     public boolean validateTel(String adress){
@@ -449,5 +478,48 @@ public class Main2Activity extends AppCompatActivity {
     }
     public boolean smallStr ( String str ){
         return (Pattern.compile("\\w{4,}")).matcher(str).find();
+    }
+    protected String DeleteLastSibol(String str){
+        if (str != null && str.length() > 0) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
+
+    private void selectTheme() {
+        SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+        String theme = mSettings.getString(Setting.APP_PREFERENCES_THEME, "");
+        switch (theme){
+            case "0":
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                icon = R.drawable.delete;
+                colors[0] = "#000000";
+                colors[1] = "#757575";
+                break;
+            case "1":
+                getTheme().applyStyle(R.style.GreelLightView, true);
+                icon = R.drawable.delete;
+                colors[0] = "#000000";
+                colors[1] = "#757575";
+                break;
+            case "2":
+                getTheme().applyStyle(R.style.DarkBlueView, true);
+                icon = R.drawable.icondeletebd;
+                colors[0] = "#ffffff";
+                colors[1] = "#5b7a8d";
+                break;
+            case "3":
+                getTheme().applyStyle(R.style.GreenBlueView, true);
+                icon = R.drawable.icondeletegd;
+                colors[0] = "#ffffff";
+                colors[1] = "#64947b";
+                break;
+            default:
+                getTheme().applyStyle(R.style.BlueLightView, true);
+                icon = R.drawable.delete;
+                colors[0] = "#000000";
+                colors[1] = "#757575";
+                break;
+        }
     }
 }

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0AB14B</color>
-    <color name="colorPrimaryDark">#00682C</color>
-    <color name="colorAccent">#0AB14B</color>
+    <color name="Blue_colorPrimary">#2487c0</color>
+    <color name="Blue_colorPrimaryDark">#17638f</color>
+    <color name="Blue_colorAccent">#2487c0</color>
+
+    <color name="Green_colorPrimary">#24c06d</color>
+    <color name="Green_colorPrimaryDark">#238c54</color>
+    <color name="Green_colorAccent">#24c06d</color>
+
+    <color name="light_windback">#fff</color>
+    <color name="darkgren_wndback">#383838</color>
+    <color name="darkblue_wndback">#17212b</color>
 </resources>

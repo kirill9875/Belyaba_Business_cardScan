@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/DarkBlueView">
         <activity android:name=".Setting"></activity>
-        <activity android:name=".ViewFullImage" />
         <activity android:name=".Main3Activity" />
         <activity android:name=".Main2Activity" />
         <activity android:name=".MainActivity">

@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                 vertical_Main.setOrientation(LinearLayout.VERTICAL);
                 vertical_Main.setLayoutParams(p3);
                 vertical_Main.setId(id);
+                vertical_Main.setOnTouchListener(new SwipeTouchListener(this, vertical_Main, id - ID_FOR_CARD, DB));
                 main.addView(vertical_Main);
 
                 LinearLayout horisont_liner = new LinearLayout(this);

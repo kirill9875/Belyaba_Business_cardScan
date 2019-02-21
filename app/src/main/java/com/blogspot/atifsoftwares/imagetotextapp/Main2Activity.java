@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Looper;
@@ -84,6 +85,7 @@ public class Main2Activity extends AppCompatActivity {
     };
 
     public LinearLayout ll;
+    int icon;
 
     @SuppressLint("ResourceType")
     @Override
@@ -413,7 +415,7 @@ public class Main2Activity extends AppCompatActivity {
         if (index != -9) {
             ImageButton del = new ImageButton(d);
             del.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.f));
-            del.setBackgroundResource(R.drawable.delete);
+            del.setBackgroundResource(icon);
             del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -474,18 +476,23 @@ public class Main2Activity extends AppCompatActivity {
         switch (theme){
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);
+                icon = R.drawable.delete;
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
+                icon = R.drawable.delete;
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
+                icon = R.drawable.icondeletebd;
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
+                icon = R.drawable.icondeletegd;
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
+                icon = R.drawable.delete;
                 break;
         }
     }

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -25,6 +27,11 @@ public class Setting extends AppCompatActivity {
 
     SharedPreferences mSettings;
 
+    TextView sett_url;
+    Spinner sett_theme;
+    Switch sett_ru;
+    Button sett_DB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +39,10 @@ public class Setting extends AppCompatActivity {
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        TextView sett_url = (TextView)findViewById(R.id.sett_url);
-        Spinner sett_theme = (Spinner)findViewById(R.id.sett_theme);
-        Switch sett_ru = (Switch)findViewById(R.id.sett_ru);
-        Button sett_DB = (Button)findViewById(R.id.sett_DB);
+        sett_url = (TextView)findViewById(R.id.sett_url);
+        sett_theme = (Spinner)findViewById(R.id.sett_theme);
+        sett_ru = (Switch)findViewById(R.id.sett_ru);
+        sett_DB = (Button)findViewById(R.id.sett_DB);
 
 
         sett_DB.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +67,31 @@ public class Setting extends AppCompatActivity {
             sett_ru.setChecked(Boolean.parseBoolean(ru));
         }
 
+    }
+
+    //actionbar menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //inflate menu
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+    //handle actionbar item clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_save){
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString(APP_PREFERENCES_URL, sett_url.getText().toString());
+            editor.putString(APP_PREFERENCES_THEME, Integer.toString(sett_theme.getSelectedItemPosition()));
+            editor.putString(APP_PREFERENCES_RU, Boolean.toString(sett_ru.isChecked()));
+            editor.apply();
+
+            Intent result = new Intent();
+            setResult(RESULT_CANCELED, result);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected void setdefaultsetting(){

@@ -179,8 +179,9 @@ public class Main2Activity extends AppCompatActivity {
 
             public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
-
-                HttpPost request = new HttpPost("https://salesprrest.croc.ru/api/leads");
+                SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
+                String url = mSettings.getString(Setting.APP_PREFERENCES_URL, "");
+                HttpPost request = new HttpPost(url);
 
                 HttpPost request2 = new HttpPost("https://webhook.site/9145bd21-08e8-4d93-a7c9-900b8429d297");
 

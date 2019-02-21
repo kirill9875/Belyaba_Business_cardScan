@@ -8,10 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase DB;
 
+    String[] colors = new String[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
                 vertical_main.addView(vertical_text);
                 //Дата
                 TextView TextView_data = new TextView(this);
+                TextView_data.setTextColor(Color.parseColor(colors[1]));
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                 Date date1 = new Date();
                 try {
@@ -319,14 +323,17 @@ public class MainActivity extends AppCompatActivity {
                 //Имя
                 TextView TextView_name = new TextView(text_title);
                 TextView_name.setText(DeleteLastSibol(name));
+                TextView_name.setTextColor(Color.parseColor(colors[0]));
                 vertical_text.addView(TextView_name);
                 //Должность
                 TextView TextView_company = new TextView(text);
                 TextView_company.setText(DeleteLastSibol(company));
+                TextView_company.setTextColor(Color.parseColor(colors[0]));
                 vertical_text.addView(TextView_company);
                 //Телефон
                 TextView TextView_telephon = new TextView(text);
                 TextView_telephon.setText(DeleteLastSibol(telephone));
+                TextView_telephon.setTextColor(Color.parseColor(colors[0]));
                 vertical_text.addView(TextView_telephon);
 
                 LinearLayout vertical_img = new LinearLayout(this);
@@ -553,18 +560,28 @@ public class MainActivity extends AppCompatActivity {
         switch (theme){
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
+                colors[0] = "#ffffff";
+                colors[1] = "#5b7a8d";
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
+                colors[0] = "#ffffff";
+                colors[1] = "#64947b";
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
         }
     }

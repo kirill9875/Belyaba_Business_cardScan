@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,6 +88,7 @@ public class Main2Activity extends AppCompatActivity {
 
     public LinearLayout ll;
     int icon;
+    String[] colors = new String[2];
 
     @SuppressLint("ResourceType")
     @Override
@@ -391,6 +394,7 @@ public class Main2Activity extends AppCompatActivity {
             TextView textView = new TextView(this);
             textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,0));
             textView.setText("Other");
+            textView.setTextColor(Color.parseColor(colors[1]));
             vertical_liner.addView(textView);
         } else {
             Spinner spin = new Spinner(text);
@@ -399,6 +403,16 @@ public class Main2Activity extends AppCompatActivity {
             spin.setAdapter(adapter);
             spin.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f));
             spin.setSelection(index);
+            spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor(colors[1])); /* if you want your item to be white */
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
             vertical_liner.addView(spin);
         }
 
@@ -410,6 +424,7 @@ public class Main2Activity extends AppCompatActivity {
         EditText et = new EditText(this);
         et.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         et.setText(retval);
+        et.setTextColor(Color.parseColor(colors[0]));
         horisont_liner.addView(et);
 
         if (index != -9) {
@@ -477,22 +492,32 @@ public class Main2Activity extends AppCompatActivity {
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);
                 icon = R.drawable.delete;
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
                 icon = R.drawable.delete;
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
                 icon = R.drawable.icondeletebd;
+                colors[0] = "#ffffff";
+                colors[1] = "#5b7a8d";
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
                 icon = R.drawable.icondeletegd;
+                colors[0] = "#ffffff";
+                colors[1] = "#64947b";
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
                 icon = R.drawable.delete;
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
         }
     }

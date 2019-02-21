@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class Main3Activity extends AppCompatActivity {
 
     LinearLayout vertical_main;
     Bitmap[] icons = new Bitmap[7];
+    String[] colors = new String[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,7 @@ public class Main3Activity extends AppCompatActivity {
         TextView TextView_name = new TextView(this);
         TextView_name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         TextView_name.setText("Added " + dat);
+        TextView_name.setTextColor(Color.parseColor(colors[1]));
         main.addView(TextView_name);
     }
 
@@ -178,10 +181,12 @@ public class Main3Activity extends AppCompatActivity {
         TextView title_TextView_name = new TextView(theme);
         title_TextView_name.setLayoutParams(p);
         title_TextView_name.setText(DeleteLastSibol(text));
+        title_TextView_name.setTextColor(Color.parseColor(colors[0]));
         vertical_text.addView(title_TextView_name);
 
         TextView TextView_name = new TextView(this);
         TextView_name.setLayoutParams(p3);
+        TextView_name.setTextColor(Color.parseColor(colors[1]));
         TextView_name.setText(title);
         vertical_text.addView(TextView_name);
 
@@ -228,6 +233,8 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
@@ -238,6 +245,8 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
@@ -248,6 +257,8 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconmaildb);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconurldb);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconpuzzledb);
+                colors[0] = "#ffffff";
+                colors[1] = "#5b7a8d";
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
@@ -258,6 +269,8 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconmail);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconurl);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconpuzzledb);
+                colors[0] = "#ffffff";
+                colors[1] = "#64947b";
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
@@ -268,6 +281,8 @@ public class Main3Activity extends AppCompatActivity {
                 icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
                 icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
                 icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
+                colors[0] = "#00000";
+                colors[1] = "#757575";
                 break;
         }
     }

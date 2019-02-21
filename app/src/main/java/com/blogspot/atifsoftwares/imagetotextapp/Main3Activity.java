@@ -5,21 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewStructure;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -45,6 +38,7 @@ public class Main3Activity extends AppCompatActivity {
     protected String dat;
 
     LinearLayout vertical_main;
+    Bitmap[] icons = new Bitmap[7];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,20 +75,21 @@ public class Main3Activity extends AppCompatActivity {
         img_view.setImageBitmap(bitmap);
         main.addView(img_view);
         main.addView(vertical_main);
+
         //Имя
-        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.name),"Name",name);
+        addRow(icons[0],"Name",name);
         //Саб
-        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.job),"Subject",subject);
-        //Компания
-        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.company),"Company",company);
-        //Телефон
-        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.telephone),"Telephone",telephone);
+        addRow(icons[1],"Subject",subject);
+        //Компа
+        addRow(icons[2],"Company",company);
+        //Телеф
+        addRow(icons[3],"Telephone",telephone);
         //Почта
-        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"E-mail",email);
+        addRow(icons[4],"E-mail",email);
         //URL
-        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"URL",URL);
-        //Другое
-        addRow(BitmapFactory.decodeResource(getResources(), R.drawable.mail),"Other",other);
+        addRow(icons[5],"URL",URL);
+        //Друго
+        addRow(icons[6],"Other",other);
 
         TextView TextView_name = new TextView(this);
         TextView_name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -226,18 +221,53 @@ public class Main3Activity extends AppCompatActivity {
         switch (theme){
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);
+                icons[0] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconprofile);
+                icons[1] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconbriefcase);
+                icons[2] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconmonument);
+                icons[3] = BitmapFactory.decodeResource(getResources(), R.drawable.i_ring);
+                icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
+                icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
+                icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
                 break;
             case "1":
                 getTheme().applyStyle(R.style.GreelLightView, true);
+                icons[0] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconprofile);
+                icons[1] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconbriefcase);
+                icons[2] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconmonument);
+                icons[3] = BitmapFactory.decodeResource(getResources(), R.drawable.i_ring);
+                icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
+                icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
+                icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
                 break;
             case "2":
                 getTheme().applyStyle(R.style.DarkBlueView, true);
+                icons[0] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconnamedb);
+                icons[1] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconjobdb);
+                icons[2] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconcompanydb);
+                icons[3] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconphonedb);
+                icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconmaildb);
+                icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconurldb);
+                icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.b_iconpuzzledb);
                 break;
             case "3":
                 getTheme().applyStyle(R.style.GreenBlueView, true);
+                icons[0] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconname);
+                icons[1] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconbriefcase);
+                icons[2] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconcompany);
+                icons[3] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconphone);
+                icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconmail);
+                icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconurl);
+                icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.g_iconpuzzledb);
                 break;
             default:
                 getTheme().applyStyle(R.style.BlueLightView, true);
+                icons[0] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconprofile);
+                icons[1] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconbriefcase);
+                icons[2] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconmonument);
+                icons[3] = BitmapFactory.decodeResource(getResources(), R.drawable.i_ring);
+                icons[4] = BitmapFactory.decodeResource(getResources(), R.drawable.i_envelope);
+                icons[5] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconsphere);
+                icons[6] = BitmapFactory.decodeResource(getResources(), R.drawable.i_iconpuzzle);
                 break;
         }
     }

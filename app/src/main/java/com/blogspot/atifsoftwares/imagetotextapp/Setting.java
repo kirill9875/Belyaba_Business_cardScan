@@ -31,6 +31,7 @@ public class Setting extends AppCompatActivity {
     Spinner sett_theme;
     Switch sett_ru;
     Button sett_DB;
+    Button sett_default;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class Setting extends AppCompatActivity {
         sett_theme = (Spinner)findViewById(R.id.sett_theme);
         sett_ru = (Switch)findViewById(R.id.sett_ru);
         sett_DB = (Button)findViewById(R.id.sett_DB);
+        sett_default = (Button)findViewById(R.id.sett_default);
 
 
         sett_DB.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +53,13 @@ public class Setting extends AppCompatActivity {
                 Intent result = new Intent();
                 setResult(RESULT_OK, result);
                 finish();
+            }
+        });
+
+        sett_default.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setdefaultsetting();
             }
         });
 
@@ -100,5 +109,13 @@ public class Setting extends AppCompatActivity {
         editor.putString(APP_PREFERENCES_THEME, DEFAULT_THEME);
         editor.putString(APP_PREFERENCES_RU, DEFAULT_RU);
         editor.apply();
+
+        String url = mSettings.getString(APP_PREFERENCES_URL, "");
+        String theme = mSettings.getString(APP_PREFERENCES_THEME, "");
+        String ru = mSettings.getString(APP_PREFERENCES_RU, "");
+
+        sett_url.setText(url);
+        sett_theme.setSelection(Integer.parseInt(theme));
+        sett_ru.setChecked(Boolean.parseBoolean(ru));
     }
 }

@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -362,7 +363,8 @@ public class MainActivity extends AppCompatActivity {
             horisontal_img.setOrientation(LinearLayout.VERTICAL);
             horisontal_img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             if(image_id == R.drawable.mosner){
-                horisontal_img.setBackgroundColor(Color.parseColor("#3a7e73"));
+                View par = (View) main.getParent();
+                ((ScrollView) par).setBackgroundColor(Color.parseColor("#3a7e73"));
             }
             main.addView(horisontal_img);
 

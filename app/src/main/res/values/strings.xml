@@ -3,9 +3,9 @@
     <string name="name">Сохранить</string>
 
     <string-array name="them_list">
-        <item>Them1</item>
-        <item>Them2</item>
-        <item>Them3</item>
-        <item>Them4</item>
+        <item>LightBlue</item>
+        <item>LightGreen</item>
+        <item>DarkBlue</item>
+        <item>DarkGreen</item>
     </string-array>
 </resources>

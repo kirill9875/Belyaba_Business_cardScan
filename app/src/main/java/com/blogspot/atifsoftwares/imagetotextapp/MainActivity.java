@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
     private static final int IMAGE_PICK_GALLERY_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_CODE = 1001;
 
-    final int ID_land = 1;
+    int ID_land = 1;
 
     final String cam [] = {"Camera","Камера"};
     final String gal [] = {"Gallery","Галерея"};
@@ -569,6 +569,9 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
     private void selectTheme() {
         SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
         String theme = mSettings.getString(Setting.APP_PREFERENCES_THEME, "");
+        String lang = mSettings.getString(Setting.APP_PREFERENCES_LANG, "0");
+        ID_land = Integer.parseInt(lang);
+
         switch (theme){
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);

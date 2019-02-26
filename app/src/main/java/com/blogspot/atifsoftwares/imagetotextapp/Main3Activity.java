@@ -25,7 +25,7 @@ public class Main3Activity extends AppCompatActivity {
     static final private int ACTIVE3 = 23;
     Intent intent = null;
 
-    final static int ID_lang = 1;
+    static int ID_lang = 1;
 
     protected Intent result;
 
@@ -241,6 +241,9 @@ public class Main3Activity extends AppCompatActivity {
     private void selectTheme() {
         SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
         String theme = mSettings.getString(Setting.APP_PREFERENCES_THEME, "");
+        String lang = mSettings.getString(Setting.APP_PREFERENCES_LANG, "0");
+        ID_lang = Integer.parseInt(lang);
+
         switch (theme){
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);

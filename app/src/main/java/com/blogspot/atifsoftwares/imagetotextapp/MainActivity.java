@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
         }
     }
 
-
     //actionbar menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -538,6 +537,10 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
                 Bitmap bitmap = null;
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,30,stream);
+                    byte[] byteArray = stream.toByteArray();
+                    bitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

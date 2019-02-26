@@ -396,7 +396,10 @@ public class Main2Activity extends AppCompatActivity {
         if (index == -9){
             TextView textView = new TextView(this);
             textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,0));
-            textView.setText("Other");
+
+            String[] oth = {"Other","Другое"};
+
+            textView.setText(oth[id_lang_eng]);
             textView.setTextColor(Color.parseColor(colors[1]));
             vertical_liner.addView(textView);
         } else {

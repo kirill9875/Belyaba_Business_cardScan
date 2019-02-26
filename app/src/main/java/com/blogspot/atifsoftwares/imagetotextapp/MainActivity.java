@@ -125,8 +125,7 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
             editor.apply();
         }
     }
-
-
+    
     //actionbar menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

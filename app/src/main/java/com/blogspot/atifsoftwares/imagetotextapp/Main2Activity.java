@@ -75,6 +75,7 @@ public class Main2Activity extends AppCompatActivity {
     int id = -1;
     String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "",_Subject = "";
     String _Other_text= "null";
+    String[] types = null;
 
     int type = -1;
     boolean mail = false;
@@ -83,9 +84,7 @@ public class Main2Activity extends AppCompatActivity {
     String fName;
     Uri myUri;
 
-    final String[] types = new String[] {
-            NAME[id_lang_eng], SUBJECT[id_lang_eng], COMPANY[id_lang_eng], EMAIL[id_lang_eng], TELEPHONE[id_lang_eng], URL[id_lang_eng]
-    };
+
 
     public LinearLayout ll;
     int icon;
@@ -96,6 +95,10 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectTheme();
+        types = new String[] {
+                NAME[id_lang_eng], SUBJECT[id_lang_eng], COMPANY[id_lang_eng], EMAIL[id_lang_eng], TELEPHONE[id_lang_eng], URL[id_lang_eng]
+        };
+
         setContentView(R.layout.activity_main2);
         Intent intent = getIntent();
         type = intent.getIntExtra("type", -1);

@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
     final String cam [] = {"Camera","Камера"};
     final String gal [] = {"Gallery","Галерея"};
 
-//    final String[] it = {"Setting","Настройки"}; //относиться к мюню и item
+    final String[] it = {"Setting","Настройки"}; //относиться к мюню и item
 
     String cameraPermission[];
     String storagePermission[];
@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
             }
         });
 
+
     }
 
     private void CheckSetting() {
@@ -143,14 +144,14 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
     public boolean onCreateOptionsMenu(Menu menu) {
         //inflate menu
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem mi = menu.getItem(1);
+        mi.setTitle(it[ID_land]);
         return true;
     }
     //handle actionbar item clicks
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        //перенести item
-//        item.setTitle(it[ID_land]);
 
         int id = item.getItemId();
         if (id == R.id.addImage){

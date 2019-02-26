@@ -659,7 +659,6 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
                 height, filter);
         return newBitmap;
     }
-
     @Override
     public void getOCRCallBackResult(String response) {
         String yspex = response;

@@ -63,13 +63,14 @@ import static java.net.Proxy.Type.HTTP;
 public class Main2Activity extends AppCompatActivity {
 
 
-    final String SUBJECT = "Subject";
-    final String NAME = "Name";
-    final String COMPANY = "Company";
-    final String EMAIL = "Email";
-    final String TELEPHONE = "Telephone";
-    final String URL = "URL";
+    final String [] SUBJECT = new String[] {"Subject", "Должность"};
+    final String [] NAME = new String[]  {"Name", "Имя"};
+    final String [] COMPANY = new String[] {"Company", "Организация"};
+    final String [] EMAIL = new String[] {"Email", "Эл.Почта"};
+    final String [] TELEPHONE = new String[] {"Telephone", "Номер телефона"};
+    final String [] URL =  new String[] {"URL", "Сайт"};
 
+    final int id_lang_eng = 1 ;
 
     int id = -1;
     String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "",_Subject = "";
@@ -83,7 +84,7 @@ public class Main2Activity extends AppCompatActivity {
     Uri myUri;
 
     final String[] types = new String[] {
-            NAME, SUBJECT, COMPANY, EMAIL, TELEPHONE, URL
+            NAME[id_lang_eng], SUBJECT[id_lang_eng], COMPANY[id_lang_eng], EMAIL[id_lang_eng], TELEPHONE[id_lang_eng], URL[id_lang_eng]
     };
 
     public LinearLayout ll;
@@ -125,32 +126,34 @@ public class Main2Activity extends AppCompatActivity {
                 childView_edittext = ((LinearLayout) childView).getChildAt(0);
 
                 String text = ((EditText)childView_edittext).getText().toString();
-                String position;
+                int position;
+
                 if (childView_splinn instanceof Spinner) {
-                    position = ((Spinner) childView_splinn).getSelectedItem().toString();
+                    position = ((Spinner) childView_splinn).getSelectedItemPosition();
                 } else {
-                    position = "other";
+                    position = 6;
                 }
+
                 switch(position) {
-                    case NAME:
+                    case 0:
                         _Name += text + "\n";
                         break;
-                    case SUBJECT:
+                    case 1:
                         _Subject += text + "\n";
                         break;
-                    case COMPANY:
+                    case 2:
                         _Company += text + "\n";
                         break;
-                    case EMAIL:
+                    case 3:
                         _Email += text + "\n";
                         break;
-                    case TELEPHONE:
+                    case 4:
                         _Telephone += text + "\n";
                         break;
-                    case URL:
+                    case 5:
                         _URL += text + "\n";
                         break;
-                    case "other":
+                    case 6:
                         _Other_text = text;
                     default:
                         break;
@@ -172,7 +175,6 @@ public class Main2Activity extends AppCompatActivity {
         }
 
         //work with json
-
         Thread t = new Thread(){
 
             HttpClient httpClient = new DefaultHttpClient();

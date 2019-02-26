@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
             editor.apply();
         }
     }
-    
+
     //actionbar menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -151,14 +151,12 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
         }
         return super.onOptionsItemSelected(item);
     }
-
     private void showImageImportDialog() {
         //items to display in dialog
 //        String[] items = {"Camera", " Gallery"};
         String items [] = {
                 cam[ID_land] , gal [ID_land]
         };
-
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         //set title
         dialog.setTitle("Select Image");
@@ -268,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
             startActivityForResult(intent, ACTIVE2);
         }
     }
-
     private void Init1activity(){
         LinearLayout main = (LinearLayout)findViewById(R.id.main_layout);
         main.removeAllViews();
@@ -400,7 +397,6 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
             cursor.close();
         }
     }
-
     //handle permission result
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -503,7 +499,6 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
                 }
 
             }
-
         } else if(requestCode == ACTIVE_SETT){
             if (resultCode == RESULT_OK) {
                 if(data.getStringExtra("type").equals("DB")) {

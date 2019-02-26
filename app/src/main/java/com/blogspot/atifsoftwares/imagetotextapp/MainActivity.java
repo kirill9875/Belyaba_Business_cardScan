@@ -71,6 +71,11 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
     private static final int IMAGE_PICK_GALLERY_CODE = 1000;
     private static final int IMAGE_PICK_CAMERA_CODE = 1001;
 
+    final int ID_land = 1;
+
+    final String cam [] = {"Camera","Камера"};
+    final String gal [] = {"Gallery","Галерея"};
+
     String cameraPermission[];
     String storagePermission[];
 
@@ -149,7 +154,11 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
 
     private void showImageImportDialog() {
         //items to display in dialog
-        String[] items = {" Camera", " Gallery"};
+//        String[] items = {"Camera", " Gallery"};
+        String items [] = {
+                cam[ID_land] , gal [ID_land]
+        };
+
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         //set title
         dialog.setTitle("Select Image");
@@ -322,10 +331,15 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
 
                 int seconds = (int) ((now.getTime() - date1.getTime()) / (1000));
 
-                if (seconds < 60){TextView_data.setText(seconds + "sec"); }
-                else if (seconds < 60*60) {TextView_data.setText(((int)(seconds/60)) + "min");}
-                else if (seconds < 60*60*24) {TextView_data.setText(((int)(seconds/60/60)) + "hour");}
-                else {TextView_data.setText(((int)(seconds/60/60/24)) + "day");}
+                String [] sec = {"sec","сек."};
+                String [] min = {"min","мин."};
+                String [] hour = {"hour","ч."};
+                String [] day = {"day","дней"};
+
+                if (seconds < 60){TextView_data.setText(seconds + sec[ID_land]); }
+                else if (seconds < 60*60) {TextView_data.setText(((int)(seconds/60)) + min[ID_land]);}
+                else if (seconds < 60*60*24) {TextView_data.setText(((int)(seconds/60/60)) + hour[ID_land]);}
+                else {TextView_data.setText(((int)(seconds/60/60/24)) + day[ID_land]);}
 
                 vertical_main.addView(TextView_data);
 

@@ -26,6 +26,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Base64;
 import android.util.SparseArray;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -44,6 +45,9 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,7 +58,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
 
     //Константы
     static final private int CHOOSE_THIEF = 21;
@@ -75,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase DB;
 
+    IOCRCallBack mIOCRCallBack;
+    String mAPiKey = "f5da5b6bed88957";
+    boolean isOverlayRequired = true;
+    String mImageUrl = "http://dl.a9t9.com/blog/ocr-online/screenshot.jpg";
+    String mLanguage = "rus";
+
     int image_id;
     String[] colors = new String[3];
 
@@ -84,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         CheckSetting();
         selectTheme();
         setContentView(R.layout.activity_main);
-
+        mIOCRCallBack = this;
 
         //Получение разрешений и подключение к БД
         GetPermission();
@@ -522,39 +532,19 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK){
-                Intent intent = new Intent(this, Main2Activity.class);
-
-                Uri resultUri = result.getUri(); //get image uri
-                intent.putExtra("imageUri", resultUri.toString());
+                image_uri = result.getUri(); //get image uri
 
                 //get drawable bitmap for text recognition
                 Bitmap bitmap = null;
                 try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
-                if (!recognizer.isOperational()){
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-                    SparseArray<TextBlock> items = recognizer.detect(frame);
-                    StringBuilder sb = new StringBuilder();
-                    //get text from sb until there is no text
-                    for (int i =0; i<items.size(); i++){
-                        TextBlock myItem = items.valueAt(i);
-                        sb.append(myItem.getValue());
-                        sb.append("\n");
-                    }
-                    //set text to edit text
-                    intent.putExtra("fname",sb.toString());
-                    intent.putExtra("type",1);
-                }
-                startActivityForResult(intent, CHOOSE_THIEF);
+                OCRAsyncTask oCRAsyncTask = new OCRAsyncTask(MainActivity.this, mAPiKey, isOverlayRequired, bitmapToBase64(bitmap), mLanguage,mIOCRCallBack);
+                oCRAsyncTask.execute();
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
                 //if there is any error show it
@@ -668,5 +658,32 @@ public class MainActivity extends AppCompatActivity {
         Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
                 height, filter);
         return newBitmap;
+    }
+
+    @Override
+    public void getOCRCallBackResult(String response) {
+        String yspex = response;
+        JSONObject jsonObj = null;
+        String stringTEXT;
+        try {
+            jsonObj = new JSONObject(yspex);
+            stringTEXT = jsonObj.getJSONArray("ParsedResults").getJSONObject(0).getString("ParsedText");
+
+            Intent intent = new Intent(this, Main2Activity.class);
+            intent.putExtra("imageUri", image_uri.toString());
+            intent.putExtra("fname",stringTEXT);
+            intent.putExtra("type",1);
+            startActivityForResult(intent, CHOOSE_THIEF);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 40, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream .toByteArray();
+        String bas = "data:image/png;base64," + Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return bas;
     }
 }

@@ -110,7 +110,7 @@ public class Main3Activity extends AppCompatActivity {
         //Друго
         addRow(icons[6],other_icons[ID_lang],other);
 
-        String [] add = {"Added","Добавить"};
+        String [] add = {"Added ","Добавлено "};
 
         TextView TextView_name = new TextView(this);
         TextView_name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));

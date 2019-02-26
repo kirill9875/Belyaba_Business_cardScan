@@ -9,5 +9,6 @@
     <!--other menu items-->
     <item
         android:id="@+id/settings"
-        android:title="Setting"/>
+        android:title="Setting"
+        />
 </menu>

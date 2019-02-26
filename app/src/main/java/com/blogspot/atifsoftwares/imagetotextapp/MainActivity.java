@@ -1,6 +1,7 @@
 package com.blogspot.atifsoftwares.imagetotextapp;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -14,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -28,10 +30,13 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Base64;
 import android.util.SparseArray;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -75,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
 
     final String cam [] = {"Camera","Камера"};
     final String gal [] = {"Gallery","Галерея"};
+
+//    final String[] it = {"Setting","Настройки"}; //относиться к мюню и item
 
     String cameraPermission[];
     String storagePermission[];
@@ -141,6 +148,10 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
     //handle actionbar item clicks
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        //перенести item
+//        item.setTitle(it[ID_land]);
+
         int id = item.getItemId();
         if (id == R.id.addImage){
             showImageImportDialog();
@@ -153,13 +164,14 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
     }
     private void showImageImportDialog() {
         //items to display in dialog
-//        String[] items = {"Camera", " Gallery"};
         String items [] = {
                 cam[ID_land] , gal [ID_land]
         };
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         //set title
-        dialog.setTitle("Select Image");
+        String [] img = {"Select Image","Выберите"};
+
+        dialog.setTitle(img[ID_land]);
         dialog.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

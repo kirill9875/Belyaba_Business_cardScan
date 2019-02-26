@@ -70,7 +70,7 @@ public class Main2Activity extends AppCompatActivity {
     final String [] TELEPHONE = new String[] {"Telephone", "Номер телефона"};
     final String [] URL =  new String[] {"URL", "Сайт"};
 
-    final int id_lang_eng = 1 ;
+    int id_lang_eng = 1;
 
     int id = -1;
     String _Name = "", _Company = "", _Email = "", _Telephone = "", _URL = "",_Subject = "";
@@ -491,6 +491,9 @@ public class Main2Activity extends AppCompatActivity {
     private void selectTheme() {
         SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
         String theme = mSettings.getString(Setting.APP_PREFERENCES_THEME, "");
+        String lang = mSettings.getString(Setting.APP_PREFERENCES_LANG, "0");
+        id_lang_eng = Integer.parseInt(lang);
+
         switch (theme){
             case "0":
                 getTheme().applyStyle(R.style.BlueLightView, true);

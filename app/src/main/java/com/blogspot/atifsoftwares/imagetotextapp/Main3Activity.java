@@ -25,6 +25,8 @@ public class Main3Activity extends AppCompatActivity {
     static final private int ACTIVE3 = 23;
     Intent intent = null;
 
+    final static int ID_lang = 1;
+
     protected Intent result;
 
     protected String name;
@@ -85,24 +87,34 @@ public class Main3Activity extends AppCompatActivity {
 
         main.addView(vertical_main);
 
+        String [] name_icons = {"Name","Имя"};
+        String [] subject_icons = {"Subject","Должность"};
+        String [] comp_icons = {"Company","Организация"};
+        String [] tel_icons = {"Telephone","Номер телефона"};
+        String [] email_icons = {"E-mail","Эл.почта"};
+        String [] url_icons = {"URL","Сайт"};
+        String [] other_icons = {"Other","Другое"};
+
         //Имя
-        addRow(icons[0],"Name",name);
+        addRow(icons[0],name_icons[ID_lang],name);
         //Саб
-        addRow(icons[1],"Subject",subject);
+        addRow(icons[1],subject_icons[ID_lang],subject);
         //Компа
-        addRow(icons[2],"Company",company);
+        addRow(icons[2],comp_icons[ID_lang],company);
         //Телеф
-        addRow(icons[3],"Telephone",telephone);
+        addRow(icons[3],tel_icons[ID_lang],telephone);
         //Почта
-        addRow(icons[4],"E-mail",email);
+        addRow(icons[4],email_icons[ID_lang],email);
         //URL
-        addRow(icons[5],"URL",URL);
+        addRow(icons[5],url_icons[ID_lang],URL);
         //Друго
-        addRow(icons[6],"Other",other);
+        addRow(icons[6],other_icons[ID_lang],other);
+
+        String [] add = {"Added","Добавить"};
 
         TextView TextView_name = new TextView(this);
         TextView_name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        TextView_name.setText("Added " + dat);
+        TextView_name.setText(add[ID_lang] + dat);
         TextView_name.setTextColor(Color.parseColor(colors[1]));
         main.addView(TextView_name);
     }
@@ -131,7 +143,6 @@ public class Main3Activity extends AppCompatActivity {
         startActivityForResult(intent, ACTIVE3);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == ACTIVE3) {
@@ -142,7 +153,6 @@ public class Main3Activity extends AppCompatActivity {
             }
         }
     }
-
     private Bitmap loadImageFromStorage(String path, String name)
     {
         Bitmap b = null;

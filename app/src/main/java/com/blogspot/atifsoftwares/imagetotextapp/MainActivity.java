@@ -1,6 +1,7 @@
 package com.blogspot.atifsoftwares.imagetotextapp;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
@@ -104,6 +105,8 @@ public class MainActivity extends AppCompatActivity  {
 
     int image_id;
     String[] colors = new String[3];
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -559,6 +562,13 @@ public class MainActivity extends AppCompatActivity  {
             if (resultCode == RESULT_OK){
                 image_uri = result.getUri(); //get image uri
 
+                mProgressDialog = new ProgressDialog(this);
+                mProgressDialog.setTitle("Wait while processing....");
+                mProgressDialog.setCanceledOnTouchOutside(false);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+
+
                 //get drawable bitmap for text recognition
                 Bitmap bitmap = null;
                 try {
@@ -581,11 +591,16 @@ public class MainActivity extends AppCompatActivity  {
                             for (int i = 0; i < list.size(); i++) {
                                 items[i] = list.get(i).getParsedText();
                             }
-                            getAnalysedStrings( Arrays.toString(items));
+                            String text = Arrays.toString(items);
+                            if (mProgressDialog != null && mProgressDialog.isShowing())
+                                mProgressDialog.dismiss();
+                            getAnalysedStrings(text.substring(1, text.length() - 1));
                         }
 
                         @Override
                         public void onFailure(Call<ParcedText> call, Throwable t) {
+                            if (mProgressDialog != null && mProgressDialog.isShowing())
+                                mProgressDialog.dismiss();
                             Log.d(TAG, "Upload Failed.!");
                         }
                     });

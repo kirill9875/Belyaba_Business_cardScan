@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.ActionProvider;
 import android.view.ContextMenu;
@@ -44,6 +45,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blogspot.atifsoftwares.imagetotextapp.jsonclient.ParcedText;
+import com.blogspot.atifsoftwares.imagetotextapp.jsonclient.ParsedResult;
+import com.blogspot.atifsoftwares.imagetotextapp.jsonclient.services.UserService;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
@@ -61,11 +65,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
 
     //Константы
+    static final private String TAG = "MyApp";
     static final private int CHOOSE_THIEF = 21;
     static final private int ACTIVE2 = 22;
     static final private int ACTIVE_SETT = 23;
@@ -567,9 +578,31 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
                     e.printStackTrace();
                 }
 
+//                OCRAsyncTask oCRAsyncTask = new OCRAsyncTask(MainActivity.this, mAPiKey, isOverlayRequired, bitmapToBase64(bitmap), mLanguage,mIOCRCallBack);
+//                oCRAsyncTask.execute();
+                UserService service = new UserService();
+                try {
+                    service.saveUserImage(this, new File(image_uri.getPath()), new Callback<ParcedText>() {
+                        @Override
+                        public void onResponse(Call<ParcedText> call, Response<ParcedText> response) {
+                            List<ParsedResult> list = response.body().getParsedResults();
+                            String[] items = new String[list.size()];
 
-                OCRAsyncTask oCRAsyncTask = new OCRAsyncTask(MainActivity.this, mAPiKey, isOverlayRequired, bitmapToBase64(bitmap), mLanguage,mIOCRCallBack);
-                oCRAsyncTask.execute();
+                            for (int i = 0; i < list.size(); i++) {
+                                items[i] = list.get(i).getParsedText();
+                            }
+                            Log.d(TAG, Arrays.toString(items));
+                        }
+
+                        @Override
+                        public void onFailure(Call<ParcedText> call, Throwable t) {
+                            Log.d(TAG, "Upload Failed.!");
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
                 //if there is any error show it

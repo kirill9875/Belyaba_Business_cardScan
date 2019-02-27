@@ -68,7 +68,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
+public class MainActivity extends AppCompatActivity  {
 
     //Константы
     static final private String TAG = "MyApp";
@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
         CheckSetting();
         selectTheme();
         setContentView(R.layout.activity_main);
-        mIOCRCallBack = this;
 
         //Получение разрешений и подключение к БД
         GetPermission();
@@ -565,11 +564,10 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
                         public void onResponse(Call<ParcedText> call, Response<ParcedText> response) {
                             List<ParsedResult> list = response.body().getParsedResults();
                             String[] items = new String[list.size()];
-
                             for (int i = 0; i < list.size(); i++) {
                                 items[i] = list.get(i).getParsedText();
                             }
-                            Log.d(TAG, Arrays.toString(items));
+                            getAnalysedStrings( Arrays.toString(items));
                         }
 
                         @Override
@@ -695,23 +693,13 @@ public class MainActivity extends AppCompatActivity implements IOCRCallBack  {
                 height, filter);
         return newBitmap;
     }
-    @Override
-    public void getOCRCallBackResult(String response) {
-        String yspex = response;
-        JSONObject jsonObj = null;
-        String stringTEXT;
-        try {
-            jsonObj = new JSONObject(yspex);
-            stringTEXT = jsonObj.getJSONArray("ParsedResults").getJSONObject(0).getString("ParsedText");
 
+    public void getAnalysedStrings(String response) {
             Intent intent = new Intent(this, Main2Activity.class);
             intent.putExtra("imageUri", image_uri.toString());
-            intent.putExtra("fname",stringTEXT);
+            intent.putExtra("fname",response);
             intent.putExtra("type",1);
             startActivityForResult(intent, CHOOSE_THIEF);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private String bitmapToBase64(Bitmap bitmap) {

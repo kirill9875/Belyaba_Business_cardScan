@@ -102,12 +102,6 @@ public class MainActivity extends AppCompatActivity  {
     DBHelper dbHelper;
     SQLiteDatabase DB;
 
-    IOCRCallBack mIOCRCallBack;
-    String mAPiKey = "f5da5b6bed88957";
-    boolean isOverlayRequired = true;
-    String mImageUrl = "http://dl.a9t9.com/blog/ocr-online/screenshot.jpg";
-    String mLanguage = "rus";
-
     int image_id;
     String[] colors = new String[3];
 
@@ -577,8 +571,6 @@ public class MainActivity extends AppCompatActivity  {
                     e.printStackTrace();
                 }
 
-//                OCRAsyncTask oCRAsyncTask = new OCRAsyncTask(MainActivity.this, mAPiKey, isOverlayRequired, bitmapToBase64(bitmap), mLanguage,mIOCRCallBack);
-//                oCRAsyncTask.execute();
                 UserService service = new UserService();
                 try {
                     service.saveUserImage(this, new File(image_uri.getPath()), new Callback<ParcedText>() {

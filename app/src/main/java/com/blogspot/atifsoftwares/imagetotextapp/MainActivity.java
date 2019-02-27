@@ -562,8 +562,10 @@ public class MainActivity extends AppCompatActivity  {
             if (resultCode == RESULT_OK){
                 image_uri = result.getUri(); //get image uri
 
+                String[] textocal = {"Wait while processing....", "Подождите, пока обрабатывается...."};
+
                 mProgressDialog = new ProgressDialog(this);
-                mProgressDialog.setTitle("Wait while processing....");
+                mProgressDialog.setTitle(textocal[ID_land]);
                 mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.show();

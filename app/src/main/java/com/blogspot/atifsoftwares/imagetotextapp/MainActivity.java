@@ -520,6 +520,7 @@ public class MainActivity extends AppCompatActivity  {
 
             }
         } else if(requestCode == ACTIVE_SETT){
+            //чистит БД по тому что есть в настройках
             if (resultCode == RESULT_OK) {
                 if(data.getStringExtra("type").equals("DB")) {
                     DB.execSQL("DROP TABLE IF EXISTS " + DBHelper.TABLE_NAME);

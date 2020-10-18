@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity  {
 
     //Константы
     static final private String TAG = "MyApp";
+
+
     static final private int CHOOSE_THIEF = 21;
     static final private int ACTIVE2 = 22;
     static final private int ACTIVE_SETT = 23;

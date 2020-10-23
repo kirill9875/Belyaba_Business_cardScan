@@ -35,6 +35,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -55,6 +56,7 @@ import java.io.InvalidClassException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -180,15 +182,17 @@ public class Main2Activity extends AppCompatActivity {
         //work with json
         Thread t = new Thread(){
 
-            HttpClient httpClient = new DefaultHttpClient();
+            final HttpClient httpClient = new DefaultHttpClient();
+
 
             public void run() {
                 Looper.prepare(); //For Preparing Message Pool for the child Thread
                 SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
                 String url = mSettings.getString(Setting.APP_PREFERENCES_URL, "");
+
                 HttpPost request = new HttpPost(url);
 
-                HttpPost request2 = new HttpPost("https://webhook.site/9145bd21-08e8-4d93-a7c9-900b8429d297");
+                HttpPost request2 = new HttpPost("https://webhook.site/4466f11b-7170-4641-b94c-6a1edc686241");
 
                 JSONObject obj = new JSONObject();
 

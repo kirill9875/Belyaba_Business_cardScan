@@ -23,7 +23,7 @@ public class Setting extends AppCompatActivity {
     public static final String APP_PREFERENCES_RU = "ru"; // рус распознание
     public static final String APP_PREFERENCES_LANG = "lang"; // язык
 
-    public static final String DEFAULT_URL = "write CRM value"; // Json
+    public static final String DEFAULT_URL = "write_CRM_value"; // Json
     public static final String DEFAULT_THEME = "0"; // тема
     public static final String DEFAULT_RU = "false"; // рус распознание
     public static final String DEFAULT_LANG = "0"; // язык

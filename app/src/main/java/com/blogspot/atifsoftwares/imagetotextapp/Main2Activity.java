@@ -190,7 +190,7 @@ public class Main2Activity extends AppCompatActivity {
                 SharedPreferences mSettings = getSharedPreferences(Setting.APP_PREFERENCES, Context.MODE_PRIVATE);
                 String url = mSettings.getString(Setting.APP_PREFERENCES_URL, "");
 
-                HttpPost request = new HttpPost(url);
+//                HttpPost request = new HttpPost(url);
 
                 HttpPost request2 = new HttpPost("https://webhook.site/4466f11b-7170-4641-b94c-6a1edc686241");
 
@@ -228,24 +228,24 @@ public class Main2Activity extends AppCompatActivity {
                 try {
                     params = new StringEntity(obj.toString());
 
-                    request.setEntity(params);
+                    //request.setEntity(params);
                     request2.setEntity(params);
 
-                    request.setHeader("Content-type", "application/json");
+                    //request.setHeader("Content-type", "application/json");
 
-                    HttpResponse  response = httpClient.execute(request);
+                   // HttpResponse  response = httpClient.execute(request);
 
                     HttpResponse  response2 = httpClient.execute(request2);
 
                     request2.setHeader("Content-Type", "application/json");
 
-                    String responseBody = EntityUtils.toString(response.getEntity());
+                   // String responseBody = EntityUtils.toString(response.getEntity());
                     String responseBody2 = EntityUtils.toString(response2.getEntity());
 
-                    int code = response.getStatusLine().getStatusCode();
+                    //int code = response.getStatusLine().getStatusCode();
                     int code2 = response2.getStatusLine().getStatusCode();
 
-                    System.out.println("Answer Server: "+ responseBody + " " + code);
+                   // System.out.println("Answer Server: "+ responseBody + " " + code);
                     System.out.println("Answer Server: "+ responseBody2 + " " + code2);
 
 
